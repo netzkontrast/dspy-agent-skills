@@ -122,7 +122,7 @@ dspy-agent-skills/
 │   ├── dspy-evaluation-harness/{SKILL.md, reference.md, example_metric.py}
 │   ├── dspy-gepa-optimizer/{SKILL.md, reference.md, example_gepa.py}
 │   ├── dspy-rlm-module/{SKILL.md, reference.md, example_rlm.py}
-│   └── dspy-advanced-workflow/{SKILL.md, example_pipeline.py}
+│   └── dspy-advanced-workflow/{SKILL.md, reference.md, example_pipeline.py}
 ├── scripts/install.sh           # dual-target installer
 ├── tests/                       # spec validators
 ├── docs/{installation,usage,CHANGELOG}.md
@@ -131,7 +131,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v0.2.1** • Targets DSPy 3.2.x
+**v0.2.2** • Targets DSPy 3.2.x
 
 ## License
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.2 — 2026-05-25
 
 ### Test suite hardening
 
@@ -9,6 +9,12 @@
 - Added `reference.md` presence test: every skill directory must ship a `reference.md` for progressive disclosure.
 - Moved `_ANTIPATTERN_MARKERS` and `_is_antipattern_context()` above Rule 1 so both Rule 1 (`.overall_score`) and Rule 2 (dict metrics) share the same anti-pattern context check. Added `"enforces"` marker to allow meta-references that describe prohibitions. Dropped the overly broad `"no "` marker — `"enforces"` alone covers the article line that triggered it.
 - Test count: 87 → 105.
+
+### Example artifacts
+
+- Re-ran `examples/01-rag-qa` as a clean DSPy 3.1.3 vs 3.2.0 comparison on the same model pair; the current clean DSPy 3.2.0 result is `80.47 -> 100.00`.
+- Kept `examples/03-invoice-extraction` on its historical DSPy 3.1.3 artifact after a clean probe: the 3.1.3 GEPA run was stopped before completion after finding a `0.944` candidate, and the 3.2.0 baseline on the same model pair already reached `0.944`.
+- Updated README, examples index, and per-example `version_comparison.{md,json}` files so the published docs describe the clean comparison path and no longer depend on `.venv-dspy313` / `.venv-dspy320` state.
 
 ### New content
 
@@ -21,17 +27,9 @@
 - Added `--verify` flag to `scripts/install.sh`: validates each expected skill exists at the destination, checks symlink targets or directory presence, and reports pass/fail per skill.
 - Updated `docs/installation.md` verification section to reference `--verify`.
 
-## v0.2.2 — Unreleased
-
-### Example artifacts
-
-- Re-ran `examples/01-rag-qa` as a clean DSPy 3.1.3 vs 3.2.0 comparison on the same model pair; the current clean DSPy 3.2.0 result is `80.47 -> 100.00`.
-- Kept `examples/03-invoice-extraction` on its historical DSPy 3.1.3 artifact after a clean probe: the 3.1.3 GEPA run was stopped before completion after finding a `0.944` candidate, and the 3.2.0 baseline on the same model pair already reached `0.944`.
-- Updated README, examples index, and per-example `version_comparison.{md,json}` files so the published docs describe the clean comparison path and no longer depend on `.venv-dspy313` / `.venv-dspy320` state.
-
 ### Validation
 
-- `uv run --with pytest python -m pytest tests/ -v` -> full suite passed
+- `uv run --with pytest python -m pytest tests/ -v` -> 108 passed
 - Live reruns/probes:
   - `examples/01-rag-qa` -> `80.47 -> 100.00` with `openrouter/mistralai/ministral-3b-2512`
   - `examples/03-invoice-extraction` -> clean probe recorded `0.944` baseline under DSPy 3.2.0; historical artifact retained
