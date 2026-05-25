@@ -12,7 +12,7 @@ and caught it in external review. Each guard maps to a specific pitfall:
    must return `dspy.Prediction(score=..., feedback=...)`. The guard scans
    code-style returns AND prose mentions AND multi-line dict literals, since
    any of these will teach an agent the wrong contract.
-3. Stale RLM defaults — `max_output_chars` is 10_000 in DSPy 3.2.0, not
+3. Stale RLM defaults — `max_output_chars` is 10_000 in DSPy 3.2.x, not
    100_000. Any reference to the old value is a bug.
 4. Stale BetterTogether API guidance — DSPy 3.2.0 uses arbitrary named
    optimizers via `dspy.BetterTogether(metric=..., bootstrap=..., gepa=...)`,
@@ -21,11 +21,13 @@ and caught it in external review. Each guard maps to a specific pitfall:
    that claim, and the dry-run smoke-test loop depends on it.
 6. `docs/usage.md` must list every per-skill `example_*.py` command that
    contributors are expected to keep runnable.
-7. Installation docs must reflect the actual example runtime path — DSPy
-   3.2.0, `OPENROUTER_API_KEY` for the end-to-end examples, and the
+7. Installation docs must reflect the actual example runtime path — current DSPy
+   3.2.1 validation, `OPENROUTER_API_KEY` for the end-to-end examples, and the
    `UV_EXCLUDE_NEWER` troubleshooting note we validated locally.
 8. Release-status docs must not regress to claiming all committed example
    artifacts are still historical DSPy 3.1.3 runs after the 3.2 refresh.
+9. Evaluation-harness docs must teach the GEPA-compatible five-argument metric
+   signature and only aggregation-safe metric return shapes.
 
 Rule 2's regex intentionally errs on the side of false positives. To allow an
 intentional anti-pattern mention, put one of the marker words (see
@@ -187,7 +189,7 @@ def test_no_dict_metric_guidance(path: Path):
 
 
 def test_no_stale_rlm_max_output_chars():
-    """`max_output_chars` default in DSPy 3.2.0 is 10_000, not 100_000."""
+    """`max_output_chars` default in DSPy 3.2.x is 10_000, not 100_000."""
     offenders: list[str] = []
     stale_patterns = (
         re.compile(r"max_output_chars\s*=\s*100_000\b"),
@@ -205,7 +207,7 @@ def test_no_stale_rlm_max_output_chars():
                     offenders.append(f"{path.relative_to(REPO)}:{i}: {line.strip()}")
                     break
     assert not offenders, (
-        "Stale `max_output_chars` default detected. DSPy 3.2.0 uses 10_000:\n  "
+        "Stale `max_output_chars` default detected. DSPy 3.2.x uses 10_000:\n  "
         + "\n  ".join(offenders)
     )
 
@@ -294,7 +296,7 @@ def test_usage_doc_lists_every_skill_example():
 
 
 def test_installation_doc_matches_example_runtime():
-    """The install guide should point example runners at DSPy 3.2.0 + OpenRouter."""
+    """The install guide should point example runners at DSPy 3.2.1 + OpenRouter."""
     text = _read(DOCS / "installation.md")
     assert "dspy-ai>=3.1.0" not in text, (
         "`docs/installation.md` still mentions the stale `dspy-ai>=3.1.0` "
@@ -304,13 +306,73 @@ def test_installation_doc_matches_example_runtime():
         "`docs/installation.md` should mention `OPENROUTER_API_KEY` for the "
         "end-to-end examples under `examples/`."
     )
-    assert ('"dspy==3.2.0"' in text or "`dspy==3.2.0`" in text or "pip install dspy" in text), (
-        "`docs/installation.md` should show the tested DSPy 3.2.0 install path."
+    assert '"dspy==3.2.1"' in text or "`dspy==3.2.1`" in text, (
+        "`docs/installation.md` should show the tested DSPy 3.2.1 install path."
     )
     assert "UV_EXCLUDE_NEWER" in text, (
         "`docs/installation.md` should document the `UV_EXCLUDE_NEWER` gotcha "
-        "that can hide DSPy 3.2.0 from `uv run --with dspy`."
+        "that can hide current DSPy releases from `uv run --with dspy`."
     )
+    assert "scripts/check_dspy_surface.py" in text, (
+        "`docs/installation.md` should mention the maintainer DSPy surface check."
+    )
+
+
+def test_readme_mentions_current_dspy_surface_check():
+    """README should distinguish current API validation from historical artifacts."""
+    text = _read(REPO / "README.md")
+    assert "DSPy 3.2.1" in text, "README should mention current DSPy 3.2.1 validation."
+    assert "scripts/check_dspy_surface.py" in text, (
+        "README should document the current DSPy API surface check."
+    )
+    assert "committed example artifacts remain explicitly labeled" in text, (
+        "README should not imply historical example artifacts were rerun under 3.2.1."
+    )
+
+
+def test_gepa_reference_current_best_practices():
+    """GEPA docs should carry the post-3.2.0 best-practice updates."""
+    skill = _read(SKILLS / "dspy-gepa-optimizer" / "SKILL.md")
+    reference = _read(SKILLS / "dspy-gepa-optimizer" / "reference.md")
+    combined = skill + "\n" + reference
+    assert "dspy==3.2.1" not in combined
+    assert "literal dict" in combined, "GEPA docs should explain dict metric mismatch."
+    assert "SIMBA" in combined, "GEPA docs should position SIMBA."
+    assert "20% train / 80% validation" in combined, (
+        "GEPA docs should contrast general DSPy split guidance with GEPA guidance."
+    )
+    assert "dspy.Prediction | str" not in reference
+    assert '"random"' not in reference, (
+        "GEPA reference should not teach unsupported component_selector='random'."
+    )
+
+
+def test_evaluation_reference_teaches_gepa_safe_metric_contract():
+    """Evaluation docs should not teach return shapes or signatures GEPA/Evaluate reject."""
+    text = _read(SKILLS / "dspy-evaluation-harness" / "reference.md")
+    assert "pred_name: str | None = None" in text
+    assert "pred_trace: DSPyTrace | None = None" in text
+    assert "def judge_metric(gold, pred, trace=None, pred_name=None, pred_trace=None):" in text
+    assert "float | dict" not in text
+    assert "dspy.Prediction | str" not in text
+    assert "dict and string metric returns raise `TypeError`" in text
+
+
+def test_agent_maintainer_docs_point_at_current_dspy_surface():
+    """High-leverage agent docs should stay aligned with the current validation target."""
+    combined = _read(REPO / "AGENTS.md") + "\n" + _read(REPO / "CLAUDE.md")
+    assert "dspy==3.2.1" in combined
+    assert "dspy==3.2.0" not in combined
+    assert "scripts/check_dspy_surface.py" in _read(REPO / "CLAUDE.md")
+
+
+def test_surface_script_has_semantic_metric_probes():
+    """The maintainer script should cover more than import/signature drift."""
+    text = _read(REPO / "scripts" / "check_dspy_surface.py")
+    assert "dspy.GEPA(" in text
+    assert "pred_name=None, pred_trace=None" in text
+    assert "dspy.Evaluate(" in text
+    assert "result.score == 100.0" in text
 
 
 # --- Rule 8: release status docs must not claim all examples are still 3.1.3 -

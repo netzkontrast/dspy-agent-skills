@@ -1,6 +1,6 @@
 # DSPy Advanced Workflow — Reference
 
-Source: orchestration pattern built on https://dspy.ai/ (DSPy 3.2.x).
+Source: orchestration pattern built on https://dspy.ai/ (DSPy 3.2.1 surface verified May 2026).
 
 ## `dspy.configure`
 
@@ -109,7 +109,7 @@ Always start with `"light"`. If it shows no movement, the problem is usually the
 | 1. Spec | Signature too broad ("do the task") | One-sentence instruction; name specific inputs/outputs |
 | 2. Program | Hard-coded prompts in `forward()` | Let predictors own instructions; GEPA can't mutate strings |
 | 3. Data | `trainset == valset` | Always split; overlap causes GEPA to overfit silently |
-| 3. Data | Fewer than 15 examples | GEPA's reflection minibatch needs enough variety to learn |
+| 3. Data | Tiny trainset | GEPA's reflection loop needs enough varied failures and traces to learn |
 | 4. Metric | Generic feedback ("wrong") | Cite the specific field, expected vs. actual, and why |
 | 4. Metric | Returns a dict instead of `dspy.Prediction` | `dspy.Evaluate` crashes: `TypeError: int + dict` |
 | 5. Baseline | Skipped entirely | No baseline means no claim of improvement |
@@ -126,6 +126,10 @@ Always start with `"light"`. If it shows no movement, the problem is usually the
 | Train/val overlap | Deduplicate `trainset` and `valset`; shared examples cause memorization |
 | `reflection_lm` strength | Must be capable enough to critique and propose better instructions; a 7B model reflecting on a 70B model's output rarely helps |
 | Model saturation | Baseline >0.95 means GEPA correctly no-ops; use a weaker task LM or harder evaluation set |
+
+## Data splits
+
+For GEPA, prefer the standard ML instinct: make training large and hold out a smaller but representative validation set. Other DSPy prompt optimizers may benefit from validation-heavy splits, but GEPA learns from trainset traces and textual feedback, so starving trainset removes the signal it needs.
 
 ## Sub-skill cross-references
 

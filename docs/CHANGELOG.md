@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.2.3 — 2026-05-25
+
+### DSPy 3.2.1 refresh
+
+- Retargeted install and maintainer validation guidance from exact DSPy `3.2.0` to current `3.2.1`, while keeping committed example artifacts labeled by the DSPy version that produced them.
+- Added `scripts/check_dspy_surface.py` to validate the live DSPy API surface taught by the skills (`GEPA`, `BetterTogether`, `Evaluate`, `LM`, `SIMBA`, `Embedder`, `configure_cache`, and current primitives).
+- Updated GEPA guidance for current upstream best practices: train-heavy GEPA splits, GPT-5-class reflection model shape, literal-dict metric mismatch, supported `component_selector` strings, and when to try `dspy.SIMBA`.
+- Tightened the evaluation-harness reference around DSPy 3.2.1 semantics: GEPA-compatible five-argument metric signatures and aggregation-safe metric return shapes.
+- Added production cache guidance for `dspy.configure_cache(restrict_pickle=True)`, project-local `DSPY_CACHEDIR`, and provider-side prompt caching.
+
+### Validation
+
+- `uv run --with pytest python -m pytest tests/ -v` -> 114 passed
+- `env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python scripts/check_dspy_surface.py` -> passed
+
 ## v0.2.2 — 2026-05-25
 
 ### Test suite hardening

@@ -69,7 +69,7 @@ print("Baseline:", evaluator(program).score)
 
 optimizer = dspy.GEPA(
     metric=rich_metric, auto="medium",
-    reflection_lm=dspy.LM("openai/gpt-4o", temperature=1.0, max_tokens=8000),
+    reflection_lm=dspy.LM("openai/gpt-5", temperature=1.0, max_tokens=32000),
     track_stats=True, log_dir="./gepa_logs",
 )
 optimized = optimizer.compile(student=program, trainset=trainset, valset=valset)
@@ -103,6 +103,14 @@ uv run python example_pipeline.py --dry-run
 ```
 
 Live runs require `OPENAI_API_KEY` (or equivalent for the chosen `--model`).
+
+## Maintainer API-surface check
+
+Before changing skill guidance for a new DSPy release, verify the live wheel instead of inferring from prose docs:
+
+```bash
+env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python scripts/check_dspy_surface.py
+```
 
 ## Getting help
 
