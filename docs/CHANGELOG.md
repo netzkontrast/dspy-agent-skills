@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.5.0 — 2026-09-15
+
+### New skill: `dspy-tetraframe`
+
+- Compact port of `tetraframe-dspy` (Hmbown, MIT): a decision seed is distilled to one falsifiable predicate; four corners (P, not-P, both, neither) are generated in strict isolation (`CornerView` guard, independent `rollout_id`/temperature per corner, near-duplicate regeneration); contradictions, complementarities, evidence discriminators and invariants are mapped; a non-averaging frame P* is produced with `dspy.BestOfN` under a reward that penalises compromise language.
+- Deterministic verification suite with the upstream thresholds (branch independence 0.90, rigor of both/neither 0.78, contradiction honesty 0.75, transformation quality 0.82, fake novelty 0.70, slop 0.70); `tetraframe_metric` returns `dspy.Prediction(score, feedback)` naming every failed check, so the corner generators and the transformer are GEPA-optimizable. `transformation_quality` caps at 1.0 before the compromise penalty (documented deviation) so a compromise P* cannot pass.
+- Plugs in before decisions that change authority: wiki merge/supersede/delete proposals from `dspy-deep-refine`, promotion conflicts surfaced by `dspy-clarify`, bundled objectives in `dspy-rlm-workflow`, question → decision records.
+- `dspy-advanced-workflow` routing and loop tables updated.
+
+### Validation
+
+- `pytest tests/` -> passes with the new skill
+- all eleven `skills/*/example_*.py --dry-run` pass under DSPy 3.2.1
+
 ## v0.4.0 — 2026-09-15
 
 ### New skill: `dspy-clarify`

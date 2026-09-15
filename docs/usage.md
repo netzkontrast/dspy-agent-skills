@@ -1,6 +1,6 @@
 # Usage Guide
 
-## The nine skills at a glance
+## The ten skills at a glance
 
 | Skill | Invoke when | Depends on |
 |---|---|---|
@@ -12,6 +12,7 @@
 | `dspy-deep-refine` | A retrieval base that cannot answer questions; reviewed graph/wiki edits | `dspy-evaluation-harness` |
 | `dspy-reflect-loop` | Learning from user corrections; ledger, promotion, meta-learning | `dspy-evaluation-harness`, `dspy-gepa-optimizer` |
 | `dspy-clarify` | A claim, task or query must be made precise before it changes authority (promotion, decomposition, refinement) | `dspy-evaluation-harness` |
+| `dspy-tetraframe` | A contested or hard-to-reverse decision must be assessed before it is recorded (wiki merge/supersede, promotion conflict, design/storyform choice) | `dspy-evaluation-harness`, `dspy-clarify` |
 | `dspy-advanced-workflow` | Full greenfield DSPy build and the self-optimizing loop | all others |
 
 Claude Code / Codex auto-select skills by matching the `description` field. You don't need to invoke them manually in most cases.
@@ -59,6 +60,12 @@ The agent loads `dspy-reflect-loop`: the correction becomes a gold example plus 
 > "This research claim is about to become canon — make sure it says exactly what the source says, and ask me about anything open."
 
 The agent loads `dspy-clarify`: explicit scope only where the source states it, names bound to the glossary, assumptions labelled, every remaining ambiguity as a question; verdict `clear` / `needs-author` / `not-promotable`.
+
+### Assessing a contested decision
+
+> "Should the new research page replace the old concept page, or do we keep both? Steelman it before I decide."
+
+The agent loads `dspy-tetraframe`: the seed is distilled to one predicate, four corners are generated in isolation (P, not-P, both under a typed split, neither with a replacement predicate), contradictions and evidence discriminators are mapped, a non-averaging P* is produced with `dspy.BestOfN`, and the verification table is shown; the human decides and the decision record cites the run.
 
 ### Explicit invocation
 
@@ -137,6 +144,9 @@ uv run python example_reflect_loop.py --dry-run
 
 cd ../dspy-clarify
 uv run python example_clarify.py --dry-run
+
+cd ../dspy-tetraframe
+uv run python example_tetraframe.py --dry-run
 
 cd ../dspy-advanced-workflow
 uv run python example_pipeline.py --dry-run
