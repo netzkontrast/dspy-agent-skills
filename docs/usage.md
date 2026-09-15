@@ -1,6 +1,6 @@
 # Usage Guide
 
-## The ten skills at a glance
+## The eleven skills at a glance
 
 | Skill | Invoke when | Depends on |
 |---|---|---|
@@ -13,6 +13,7 @@
 | `dspy-reflect-loop` | Learning from user corrections; ledger, promotion, meta-learning | `dspy-evaluation-harness`, `dspy-gepa-optimizer` |
 | `dspy-clarify` | A claim, task or query must be made precise before it changes authority (promotion, decomposition, refinement) | `dspy-evaluation-harness` |
 | `dspy-tetraframe` | A contested or hard-to-reverse decision must be assessed before it is recorded (wiki merge/supersede, promotion conflict, design/storyform choice) | `dspy-evaluation-harness`, `dspy-clarify` |
+| `dspy-autodialectics` | A program that drifts, fakes completion or self-certifies; anti-slop gate and GEPA slop metric; champion/challenger promotion | `dspy-evaluation-harness`, `dspy-gepa-optimizer` |
 | `dspy-advanced-workflow` | Full greenfield DSPy build and the self-optimizing loop | all others |
 
 Claude Code / Codex auto-select skills by matching the `description` field. You don't need to invoke them manually in most cases.
@@ -66,6 +67,12 @@ The agent loads `dspy-clarify`: explicit scope only where the source states it, 
 > "Should the new research page replace the old concept page, or do we keep both? Steelman it before I decide."
 
 The agent loads `dspy-tetraframe`: the seed is distilled to one predicate, four corners are generated in isolation (P, not-P, both under a typed split, neither with a replacement predicate), contradictions and evidence discriminators are mapped, a non-averaging P* is produced with `dspy.BestOfN`, and the verification table is shown; the human decides and the decision record cites the run.
+
+### Keeping a program honest
+
+> "It keeps saying 'done' with no tests. Gate it."
+
+The agent loads `dspy-autodialectics`, Tier 0 first: compile the contract, run the deterministic slop score and gate on the existing output (no LM calls). Only if the program is rebuilt does it add the typed thesis → antithesis → synthesis plan and the independent verifier; champion/challenger evolution needs a benchmark with canaries.
 
 ### Explicit invocation
 
@@ -147,6 +154,9 @@ uv run python example_clarify.py --dry-run
 
 cd ../dspy-tetraframe
 uv run python example_tetraframe.py --dry-run
+
+cd ../dspy-autodialectics
+uv run python example_autodialectics.py --dry-run
 
 cd ../dspy-advanced-workflow
 uv run python example_pipeline.py --dry-run

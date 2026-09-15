@@ -2,7 +2,7 @@
 
 [![DSPy 3.2.x](https://img.shields.io/badge/DSPy-3.2.x-0A7B83)](https://dspy.ai/)
 
-**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of ten agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
+**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of eleven agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
 
 - ✅ Validated against DSPy 3.2.1 (the real API, not inferred from stale docs)
 - ✅ Single source of truth for both **Claude Code** and **Codex CLI**
@@ -25,7 +25,8 @@
 | [`dspy-reflect-loop`](skills/dspy-reflect-loop/SKILL.md) | Turning session corrections into gold + metric feedback, ledger, promotion, meta-learning |
 | [`dspy-clarify`](skills/dspy-clarify/SKILL.md) | Precision gate: explicit scope, bound terms, open questions instead of guesses — before promotion, decomposition or refinement |
 | [`dspy-tetraframe`](skills/dspy-tetraframe/SKILL.md) | Critical assessment of a contested decision: four isolated corners (P / not-P / both / neither), contradiction map, non-averaging P*, verification suite — before decisions that change authority |
-| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the other nine, including the self-optimizing loop |
+| [`dspy-autodialectics`](skills/dspy-autodialectics/SKILL.md) | Keeping a program honest: immutable contract, thesis → antithesis → synthesis, independent verification, 12-dimension slop metric, gate, champion/challenger with canaries |
+| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the other ten, including the self-optimizing loop |
 
 ## Install
 
@@ -139,7 +140,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v0.5.0** • Targets DSPy 3.2.x
+**v0.6.0** • Targets DSPy 3.2.x
 
 ## License
 
