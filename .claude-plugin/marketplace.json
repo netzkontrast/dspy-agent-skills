@@ -8,8 +8,8 @@
     {
       "name": "dspy-agent-skills",
       "source": "./",
-      "description": "Production-grade DSPy 3.2.x skills: fundamentals, evaluation, GEPA, BetterTogether, RLM, and end-to-end workflow.",
-      "version": "0.2.3",
+      "description": "Production-grade DSPy 3.2.x skills: fundamentals, evaluation, GEPA, BetterTogether, RLM, RLM workflow, DeepRefine, reflect loop, and end-to-end self-optimizing workflow.",
+      "version": "0.3.0",
       "author": {
         "name": "Bryan Young",
         "email": "bryan@intertwinesys.com"
@@ -17,9 +17,23 @@
       "homepage": "https://github.com/intertwine/dspy-agent-skills",
       "repository": "https://github.com/intertwine/dspy-agent-skills",
       "license": "MIT",
-      "keywords": ["dspy", "gepa", "rlm", "optimization", "llm", "evaluation"],
+      "keywords": [
+        "dspy",
+        "gepa",
+        "rlm",
+        "optimization",
+        "llm",
+        "evaluation",
+        "rlm-workflow",
+        "deep-refine",
+        "reflect"
+      ],
       "category": "llm-frameworks",
-      "tags": ["dspy", "optimization", "evaluation"],
+      "tags": [
+        "dspy",
+        "optimization",
+        "evaluation"
+      ],
       "strict": true
     }
   ]

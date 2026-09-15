@@ -139,3 +139,6 @@ For GEPA, prefer the standard ML instinct: make training large and hold out a sm
 | 3–4. Data & Metric | `dspy-evaluation-harness` | [`reference.md`](../dspy-evaluation-harness/reference.md) |
 | 6. GEPA optimize | `dspy-gepa-optimizer` | [`reference.md`](../dspy-gepa-optimizer/reference.md) |
 | Long-context variant | `dspy-rlm-module` | [`reference.md`](../dspy-rlm-module/reference.md) |
+| Context-heavy verified pipeline | `dspy-rlm-workflow` | [`reference.md`](../dspy-rlm-workflow/reference.md) |
+| Knowledge-base refinement | `dspy-deep-refine` | [`reference.md`](../dspy-deep-refine/reference.md) |
+| Learning from corrections | `dspy-reflect-loop` | [`reference.md`](../dspy-reflect-loop/reference.md) |

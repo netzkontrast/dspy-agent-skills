@@ -2,7 +2,7 @@
 
 [![DSPy 3.2.x](https://img.shields.io/badge/DSPy-3.2.x-0A7B83)](https://dspy.ai/)
 
-**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of five agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
+**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of eight agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
 
 - ✅ Validated against DSPy 3.2.1 (the real API, not inferred from stale docs)
 - ✅ Single source of truth for both **Claude Code** and **Codex CLI**
@@ -20,7 +20,10 @@
 | [`dspy-evaluation-harness`](skills/dspy-evaluation-harness/SKILL.md) | Writing metrics, splitting dev/val sets, calling `dspy.Evaluate` |
 | [`dspy-gepa-optimizer`](skills/dspy-gepa-optimizer/SKILL.md) | Optimizing/compiling DSPy programs with `dspy.GEPA` |
 | [`dspy-rlm-module`](skills/dspy-rlm-module/SKILL.md) | Long context, codebase QA, recursive exploration via `dspy.RLM` |
-| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the other four |
+| [`dspy-rlm-workflow`](skills/dspy-rlm-workflow/SKILL.md) | Context-heavy, multi-step work: distill → decompose → solve → synthesize → verify → iterate, verification as the metric |
+| [`dspy-deep-refine`](skills/dspy-deep-refine/SKILL.md) | Refining the knowledge base a program retrieves from (DeepRefine loop, evidence-graded edits, approval gate) |
+| [`dspy-reflect-loop`](skills/dspy-reflect-loop/SKILL.md) | Turning session corrections into gold + metric feedback, ledger, promotion, meta-learning |
+| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the other seven, including the self-optimizing loop |
 
 ## Install
 
@@ -134,7 +137,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v0.2.3** • Targets DSPy 3.2.x
+**v0.3.0** • Targets DSPy 3.2.x
 
 ## License
 

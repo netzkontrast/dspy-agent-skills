@@ -1,6 +1,6 @@
 # Usage Guide
 
-## The five skills at a glance
+## The eight skills at a glance
 
 | Skill | Invoke when | Depends on |
 |---|---|---|
@@ -8,7 +8,10 @@
 | `dspy-evaluation-harness` | Writing metrics, splitting devset/valset, debugging eval | `dspy-fundamentals` |
 | `dspy-gepa-optimizer` | Optimizing/compiling a DSPy program | `dspy-evaluation-harness` |
 | `dspy-rlm-module` | Context >100k tokens, codebase/doc exploration | `dspy-fundamentals` |
-| `dspy-advanced-workflow` | Full greenfield DSPy build | all others |
+| `dspy-rlm-workflow` | Context-heavy multi-step work that must be verified; runtime iteration with `dspy.Refine` | `dspy-evaluation-harness`, `dspy-rlm-module` |
+| `dspy-deep-refine` | A retrieval base that cannot answer questions; reviewed graph/wiki edits | `dspy-evaluation-harness` |
+| `dspy-reflect-loop` | Learning from user corrections; ledger, promotion, meta-learning | `dspy-evaluation-harness`, `dspy-gepa-optimizer` |
+| `dspy-advanced-workflow` | Full greenfield DSPy build and the self-optimizing loop | all others |
 
 Claude Code / Codex auto-select skills by matching the `description` field. You don't need to invoke them manually in most cases.
 
@@ -18,7 +21,7 @@ Claude Code / Codex auto-select skills by matching the `description` field. You 
 
 > "Build a DSPy sentiment-classification pipeline on this CSV, optimize it, and save the artifact."
 
-The agent pulls `dspy-advanced-workflow`, which chains the other four skills in order: fundamentals (Signature/Module) → evaluation-harness (metric + Evaluate) → gepa-optimizer (compile) → fundamentals (save).
+The agent pulls `dspy-advanced-workflow`, which chains the core skills in order: fundamentals (Signature/Module) → evaluation-harness (metric + Evaluate) → gepa-optimizer (compile) → fundamentals (save).
 
 ### Debugging an optimizer
 
@@ -31,6 +34,24 @@ The agent loads `dspy-gepa-optimizer` and `dspy-evaluation-harness` and walks th
 > "Summarize every error class in this 3M-token log."
 
 The agent loads `dspy-rlm-module` and builds an RLM-backed pipeline with a cheap sub-LM.
+
+### Context-heavy work with verification
+
+> "Refactor auth across all services and verify it before you hand it over."
+
+The agent loads `dspy-rlm-workflow`: distill the context, decompose into a dependency-ordered plan, solve, synthesize with explicit contradictions, verify through the three-tier cascade, and iterate with `dspy.Refine`.
+
+### A knowledge base that keeps failing
+
+> "The wiki can't answer where Juna lives — fix the base, not the prompt."
+
+The agent loads `dspy-deep-refine`: judge → widen retrieval → abduce → propose ≤10 edits → grade evidence HIGH/MEDIUM/LOW → stop for approval.
+
+### Learning from corrections
+
+> "I told you twice to use uv, not pip. Make it stick."
+
+The agent loads `dspy-reflect-loop`: the correction becomes a gold example plus metric feedback, GEPA rewrites the instructions, the ledger prevents re-proposing it.
 
 ### Explicit invocation
 
@@ -97,6 +118,15 @@ uv run python example_bettertogether.py --dry-run
 
 cd ../dspy-rlm-module
 uv run python example_rlm.py --dry-run
+
+cd ../dspy-rlm-workflow
+uv run python example_rlm_workflow.py --dry-run
+
+cd ../dspy-deep-refine
+uv run python example_deep_refine.py --dry-run
+
+cd ../dspy-reflect-loop
+uv run python example_reflect_loop.py --dry-run
 
 cd ../dspy-advanced-workflow
 uv run python example_pipeline.py --dry-run
