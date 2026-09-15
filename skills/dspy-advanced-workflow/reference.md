@@ -142,3 +142,4 @@ For GEPA, prefer the standard ML instinct: make training large and hold out a sm
 | Context-heavy verified pipeline | `dspy-rlm-workflow` | [`reference.md`](../dspy-rlm-workflow/reference.md) |
 | Knowledge-base refinement | `dspy-deep-refine` | [`reference.md`](../dspy-deep-refine/reference.md) |
 | Learning from corrections | `dspy-reflect-loop` | [`reference.md`](../dspy-reflect-loop/reference.md) |
+| Precision gate before promotion / decomposition | `dspy-clarify` | [`reference.md`](../dspy-clarify/reference.md) |

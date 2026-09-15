@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.5.0 — 2026-09-15
+
+### New skill: `dspy-tetraframe`
+
+- Compact port of `tetraframe-dspy` (Hmbown, MIT): a decision seed is distilled to one falsifiable predicate; four corners (P, not-P, both, neither) are generated in strict isolation (`CornerView` guard, independent `rollout_id`/temperature per corner, near-duplicate regeneration); contradictions, complementarities, evidence discriminators and invariants are mapped; a non-averaging frame P* is produced with `dspy.BestOfN` under a reward that penalises compromise language.
+- Deterministic verification suite with the upstream thresholds (branch independence 0.90, rigor of both/neither 0.78, contradiction honesty 0.75, transformation quality 0.82, fake novelty 0.70, slop 0.70); `tetraframe_metric` returns `dspy.Prediction(score, feedback)` naming every failed check, so the corner generators and the transformer are GEPA-optimizable. `transformation_quality` caps at 1.0 before the compromise penalty (documented deviation) so a compromise P* cannot pass.
+- Plugs in before decisions that change authority: wiki merge/supersede/delete proposals from `dspy-deep-refine`, promotion conflicts surfaced by `dspy-clarify`, bundled objectives in `dspy-rlm-workflow`, question → decision records.
+- `dspy-advanced-workflow` routing and loop tables updated.
+
+### Validation
+
+- `pytest tests/` -> passes with the new skill
+- all eleven `skills/*/example_*.py --dry-run` pass under DSPy 3.2.1
+
+## v0.4.0 — 2026-09-15
+
+### New skill: `dspy-clarify`
+
+- Transposes the `clarify` code skill (Hmbown/clarify, Apache 2.0 — reveal intent, make the implicit explicit, add nothing, never change behaviour) from code to statements: a `ClarifyClaim` Signature returns the same claim with explicit scope (only where the source states it), glossary bindings, labelled assumptions and every remaining ambiguity as a question for the human; verdict `clear` / `needs-author` / `not-promotable`.
+- Deterministic `clarify_metric` (meaning kept, scope grounded, hedges resolved, bindings valid, questions well-formed, language kept) so the gate is GEPA-optimizable and cannot be optimized into "sounding precise".
+- Plugs in at every authority boundary: research → canon promotion, before decomposition in `dspy-rlm-workflow`, before refining a base for a query in `dspy-deep-refine`, and when a correction enters `dspy-reflect-loop`.
+- `dspy-advanced-workflow` routing and loop table updated.
+
+### Validation
+
+- `pytest tests/` -> passes with the new skill
+- all ten `skills/*/example_*.py --dry-run` pass under DSPy 3.2.1
+
 ## v0.3.0 — 2026-09-15
 
 ### Three new skills: the self-optimizing loop
