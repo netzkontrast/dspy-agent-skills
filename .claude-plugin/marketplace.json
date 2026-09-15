@@ -8,8 +8,8 @@
     {
       "name": "dspy-agent-skills",
       "source": "./",
-      "description": "Production-grade DSPy 3.2.x skills: fundamentals, evaluation, GEPA, BetterTogether, RLM, RLM workflow, DeepRefine, reflect loop, and end-to-end self-optimizing workflow.",
-      "version": "0.3.0",
+      "description": "Production-grade DSPy 3.2.x skills: fundamentals, evaluation, GEPA, BetterTogether, RLM, RLM workflow, DeepRefine, reflect loop, clarify gate, and end-to-end self-optimizing workflow.",
+      "version": "0.4.0",
       "author": {
         "name": "Bryan Young",
         "email": "bryan@intertwinesys.com"
@@ -26,7 +26,8 @@
         "evaluation",
         "rlm-workflow",
         "deep-refine",
-        "reflect"
+        "reflect",
+        "clarify"
       ],
       "category": "llm-frameworks",
       "tags": [

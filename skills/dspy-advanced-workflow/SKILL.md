@@ -1,6 +1,6 @@
 ---
 name: dspy-advanced-workflow
-description: Build DSPy 3.2.x programs through spec, program, metric and baseline; extend to optimization and export when requested and justified by task budget. Orchestrates the other seven DSPy skills (dspy-fundamentals, dspy-evaluation-harness, dspy-gepa-optimizer, dspy-rlm-module, dspy-rlm-workflow, dspy-deep-refine, dspy-reflect-loop) in the correct order. Use for greenfield DSPy builds; prototypes may stop at a validated baseline.
+description: Build DSPy 3.2.x programs through spec, program, metric and baseline; extend to optimization and export when requested and justified by task budget. Orchestrates the other eight DSPy skills (dspy-fundamentals, dspy-evaluation-harness, dspy-gepa-optimizer, dspy-rlm-module, dspy-rlm-workflow, dspy-deep-refine, dspy-reflect-loop, dspy-clarify) in the correct order. Use for greenfield DSPy builds; prototypes may stop at a validated baseline.
 when_to_use: User wants to build, optimize, and ship a new DSPy pipeline; says "full workflow" / "end to end" / "from scratch"; or needs the standard loop applied to a greenfield task.
 ---
 
@@ -23,6 +23,7 @@ Rephrase the user's task in one sentence. Identify inputs, outputs, the quality 
 | Context-heavy, multi-step, must be verified | decompose/solve/synthesize/verify → `dspy-rlm-workflow` |
 | Retrieval base keeps failing the question | refine the base → `dspy-deep-refine` |
 | Users keep correcting the program | corrections → gold + feedback → `dspy-reflect-loop` |
+| Content moves into an authoritative store, or a statement is vague | clarify gate → `dspy-clarify` |
 
 ### 2. Program
 
@@ -159,7 +160,8 @@ Once a program has a metric, three skills keep improving it and what it works wi
 | compile-time optimization | `dspy-gepa-optimizer` | the program's instructions/demos | the metric's feedback |
 | knowledge-base refinement | `dspy-deep-refine` | the base the program retrieves from | unanswerable queries → reviewed edits |
 | human feedback | `dspy-reflect-loop` | trainset + metric feedback | corrections/approvals from sessions |
+| precision gate | `dspy-clarify` | what a claim, task or query actually asserts | explicit scope, bound terms, open questions |
 
-Order per cycle: reflect (new gold from corrections) → GEPA (re-optimize) → deep-refine (fix the base for queries that still fail) → rlm-workflow (verified execution). Every loop is dry-run-first and keeps a human approval on writes.
+Order per cycle: reflect (new gold from corrections) → GEPA (re-optimize) → deep-refine (fix the base for queries that still fail) → rlm-workflow (verified execution). Clarify runs at every boundary where content changes authority: before decomposition, before refining the base for a query, before promotion. Every loop is dry-run-first and keeps a human approval on writes.
 
 ## Runnable scaffold → [example_pipeline.py](example_pipeline.py)
