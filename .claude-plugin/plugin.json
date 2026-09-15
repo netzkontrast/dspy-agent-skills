@@ -1,7 +1,7 @@
 {
   "name": "dspy-agent-skills",
-  "version": "0.5.0",
-  "description": "Production-grade DSPy 3.2.x skills for coding agents: signatures, modules, evaluation harnesses, GEPA optimization, RLM long-context reasoning, BetterTogether chaining, the RLM workflow for context-heavy verified work, DeepRefine knowledge-base refinement, the reflect loop for learning from corrections, the clarify gate for precision at authority boundaries, the TetraFrame four-corner assessment for contested decisions, and a full end-to-end self-optimizing DSPy workflow.",
+  "version": "0.6.0",
+  "description": "Production-grade DSPy 3.2.x skills for coding agents: signatures, modules, evaluation harnesses, GEPA optimization, RLM long-context reasoning, BetterTogether chaining, the RLM workflow for context-heavy verified work, DeepRefine knowledge-base refinement, the reflect loop for learning from corrections, the clarify gate for precision at authority boundaries, the TetraFrame four-corner assessment for contested decisions, the autodialectics anti-slop harness (contract, dialectic, independent verification, slop gate, champion/challenger), and a full end-to-end self-optimizing DSPy workflow.",
   "author": {
     "name": "Bryan Young",
     "email": "bryan@intertwinesys.com"
@@ -22,6 +22,8 @@
     "reflect",
     "self-optimizing",
     "clarify",
-    "tetraframe"
+    "tetraframe",
+    "autodialectics",
+    "anti-slop"
   ]
 }

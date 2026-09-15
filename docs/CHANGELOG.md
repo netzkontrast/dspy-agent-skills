@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.6.0 — 2026-09-15
+
+### New skill: `dspy-autodialectics`
+
+- Port of `autodialectics` (an anti-slop agentic harness) into DSPy constructs. Ported: the immutable contract compiler (domain inference, defaults, forbidden shortcuts, sha256), thesis → antithesis → synthesis with typed `Objection`/`Disposition` outputs (replacing the original's four regex parsers), an independent `Verify` predictor that never sees the plan, the 12-dimension `SlopScorer` as a deterministic `dspy.Prediction(score, feedback)` metric, the rubric run score, the accept/revise/reject gate, and the champion/challenger promotion rule with canary cases. Not ported: CLI, REST API, MCP server, CLI gateways, SQLite store, code sandbox (transport and product plumbing).
+- The skill is tiered so an agent loads only what it uses: Tier 0 (contract + slop score + gate) needs zero LM calls and ships as importable functions in `example_autodialectics.py`; Tier 1 adds the four-predictor `Dialectic` module; Tier 2 adds GEPA evolution with promotion gated on canaries.
+- `dspy-advanced-workflow` gained the routing row and the honesty-gate step in the self-optimizing loop.
+
+### Validation
+
+- `pytest tests/` -> passes with the new skill
+- `skills/dspy-autodialectics/example_autodialectics.py --dry-run` passes
+
 ## v0.5.0 — 2026-09-15
 
 ### New skill: `dspy-tetraframe`
