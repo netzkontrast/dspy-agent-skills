@@ -115,6 +115,15 @@ def main() -> int:
         {"restrict_pickle", "safe_types"},
     )
 
+    # Refine/BestOfN are dspy.Module subclasses: inspect __init__ (the class
+    # signature is rewritten by the Module metaclass).
+    for name in ("Refine", "BestOfN"):
+        _assert_params(
+            f"dspy.{name}.__init__",
+            getattr(dspy, name).__init__,
+            {"module", "N", "reward_fn", "threshold", "fail_count"},
+        )
+
     for name in ("Reasoning", "File", "Code"):
         _require(hasattr(dspy, name), f"dspy.{name} is missing")
 

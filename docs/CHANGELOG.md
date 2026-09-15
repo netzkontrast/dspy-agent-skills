@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.3.0 — 2026-09-15
+
+### Three new skills: the self-optimizing loop
+
+- Added `dspy-rlm-workflow` — port of the `rlm-workflow` skill suite (distill → decompose → solve → synthesize → verify → iterate, after arXiv:2512.24601) as DSPy modules. Decomposition is validated as a DAG in code, the three-tier verification cascade returns `dspy.Prediction(score, feedback)` and doubles as the GEPA metric, runtime iteration uses `dspy.Refine` / `dspy.BestOfN`, distillation uses `dspy.RLM` above ~100k tokens.
+- Added `dspy-deep-refine` — port of DeepRefine (arXiv:2605.10488, `DeepRefine-Skill` adapter): judge → k-hop expansion → error abduction on three axes → ≤10 typed refinement actions → deterministic HIGH/MEDIUM/LOW evidence review → approval gate. The module never writes; `apply` refuses LOW by default. A metric (expected triples retrievable after applying non-LOW actions on a copy) makes the refiner GEPA-optimizable.
+- Added `dspy-reflect-loop` — port of `claude-reflect-system` v1.3 (signal extraction, review, ledger, promotion, meta-learning): corrections become gold examples plus metric feedback for GEPA instead of templated instruction edits; the fingerprint ledger with a promotion threshold and the accept/modify/skip log become metrics on the reflector itself.
+- `dspy-advanced-workflow` gained the routing rows and a "self-optimizing loop" section that orders the four loops (reflect → GEPA → deep-refine → rlm-workflow).
+- `scripts/check_dspy_surface.py` now probes `dspy.Refine` and `dspy.BestOfN`.
+
+### Validation
+
+- `pytest tests/` -> passes with the three new skills
+- all nine `skills/*/example_*.py --dry-run` pass under DSPy 3.2.1
+
 ## v0.2.3 — 2026-05-25
 
 ### DSPy 3.2.1 refresh
