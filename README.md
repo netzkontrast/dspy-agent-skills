@@ -145,19 +145,41 @@ env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 python -c 'import dspy; print(
 ```
 dspy-agent-skills/
 ├── .claude-plugin/
-│   ├── plugin.json
-│   └── marketplace.json
-├── skills/
-│   ├── dspy-fundamentals/{SKILL.md, reference.md, example_qa.py}
-│   ├── dspy-evaluation-harness/{SKILL.md, reference.md, example_metric.py}
-│   ├── dspy-gepa-optimizer/{SKILL.md, reference.md, example_gepa.py}
-│   ├── dspy-rlm-module/{SKILL.md, reference.md, example_rlm.py}
-│   └── dspy-advanced-workflow/{SKILL.md, reference.md, example_pipeline.py}
-├── scripts/install.sh           # dual-target installer
-├── tests/                       # spec validators
-├── docs/{installation,usage,CHANGELOG}.md
-├── README.md  LICENSE  .gitignore
+│   ├── plugin.json              # version, description, skill metadata
+│   └── marketplace.json         # one-click install manifest
+├── skills/                      # the product — 32 skills, listed above
+│   └── <skill-name>/
+│       ├── SKILL.md             # required; frontmatter is spec-validated
+│       ├── reference.md         # deep API detail (progressive disclosure)
+│       └── example_*.py         # runnable smoke test with --dry-run
+├── examples/                    # end-to-end demos against real LMs
+│   ├── 01-rag-qa/  02-math-reasoning/  03-invoice-extraction/
+│   │                            # each with data/, version_comparison.{json,md}
+│   └── common/                  # shared runner helpers
+├── scaffolding/                 # inert reference implementations, not imported
+│   └── kp_canon_retriever.py    # the CanonRetriever seam (see docs/ plans)
+├── scripts/
+│   ├── install.sh               # dual-target installer (Claude Code + Codex)
+│   └── check_dspy_surface.py    # asserts the live DSPy API this pack teaches
+├── tests/                       # spec + doc-correctness validators
+│   ├── test_skill_metadata.py   #   frontmatter against the agentskills.io spec
+│   ├── test_manifests.py        #   JSON schema and version alignment
+│   ├── test_examples_parse.py   #   every example and scaffold parses
+│   └── test_skill_correctness.py#   ten regression rules over teaching files
+├── docs/
+│   ├── installation.md  usage.md  CHANGELOG.md
+│   ├── kohaerenz-protokoll-plugin-plan.md
+│   └── compounding-wiki-extension-plan.md
+├── articles/                    # long-form write-ups
+├── requirements.txt             # dspy>=3.3.0,<3.4 + pytest
+├── requirements-extras.txt      # per-skill third-party packages
+└── AGENTS.md  CLAUDE.md  README.md  LICENSE
 ```
+
+`skills/` is the only directory an installed plugin exposes. Everything else is
+for contributors: `examples/` and `articles/` are documentation, `scaffolding/`
+is reference code that nothing imports, and `tests/` is what keeps the skills
+honest.
 
 ## Version
 
