@@ -2,7 +2,7 @@
 
 [![DSPy 3.2.x](https://img.shields.io/badge/DSPy-3.2.x-0A7B83)](https://dspy.ai/)
 
-**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of twenty-nine agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
+**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of thirty-two agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
 
 - ✅ Validated against DSPy 3.2.1 (the real API, not inferred from stale docs)
 - ✅ Single source of truth for both **Claude Code** and **Codex CLI**
@@ -26,6 +26,9 @@
 | [`dspy-clarify`](skills/dspy-clarify/SKILL.md) | Precision gate: explicit scope, bound terms, open questions instead of guesses — before promotion, decomposition or refinement |
 | [`dspy-tetraframe`](skills/dspy-tetraframe/SKILL.md) | Critical assessment of a contested decision: four isolated corners (P / not-P / both / neither), contradiction map, non-averaging P*, verification suite — before decisions that change authority |
 | [`dspy-autodialectics`](skills/dspy-autodialectics/SKILL.md) | Keeping a program honest: immutable contract, thesis → antithesis → synthesis, independent verification, 12-dimension slop metric, gate, champion/challenger with canaries |
+| [`dspy-wiki-compile`](skills/dspy-wiki-compile/SKILL.md) | Compiling immutable sources into a maintained wiki: cited claims, two-phase concept merge, flag / update / create with active-page protection, knowledge diff |
+| [`dspy-adversarial-review`](skills/dspy-adversarial-review/SKILL.md) | An independent judge that cannot rewrite: reviewer ≠ writer asserted, overstated and unsupported claims, citation support, demotion rule, refine to a target score |
+| [`dspy-local-runtime`](skills/dspy-local-runtime/SKILL.md) | Running DSPy, evaluation and GEPA through the local Claude Code CLI with no API key; what the CLI cannot honour and how to budget |
 | [`dspy-optimizer-selection`](skills/dspy-optimizer-selection/SKILL.md) | Picking the cheapest optimizer that fits the data and metric — the whole family, baseline first, escalation on a measured plateau |
 | [`dspy-retrieval`](skills/dspy-retrieval/SKILL.md) | The retrieval half: Embedder, Embeddings, FAISS, persisted indexes, multi-hop, and scoring recall separately from answers |
 | [`dspy-production`](skills/dspy-production/SKILL.md) | Shipping and seeing: cache hardening, save formats, usage, async, streaming, callbacks, MLflow |
@@ -44,7 +47,7 @@
 | [`dspy-book-use-cases`](skills/dspy-book-use-cases/SKILL.md) | Seven complete applications as a pattern library (book ch. 9) |
 | [`dspy-book-production`](skills/dspy-book-production/SKILL.md) | Serving a compiled program, optimizable guardrails, MLflow tracing (book ch. 10) |
 | [`dspy-book-coding-agents`](skills/dspy-book-coding-agents/SKILL.md) | Optimizing a SKILL.md or AGENTS.md as a text artifact (book ch. 11) |
-| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the core skills, including the self-optimizing loop |
+| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates every other skill, including the self-optimizing loop |
 
 ## Install
 
@@ -158,7 +161,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v0.9.0** • Targets DSPy 3.2.x
+**v0.10.0** • Targets DSPy 3.2.x
 
 ## License
 

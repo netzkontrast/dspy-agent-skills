@@ -1,6 +1,6 @@
 ---
 name: dspy-advanced-workflow
-description: Build DSPy 3.2.x programs through spec, program, metric and baseline; extend to optimization and export when requested and justified by task budget. Orchestrates the other thirteen DSPy skills (dspy-fundamentals, dspy-evaluation-harness, dspy-optimizer-selection, dspy-gepa-optimizer, dspy-retrieval, dspy-rlm-module, dspy-rlm-workflow, dspy-deep-refine, dspy-reflect-loop, dspy-clarify, dspy-tetraframe, dspy-autodialectics, dspy-production) in the correct order. Use for greenfield DSPy builds; prototypes may stop at a validated baseline.
+description: Build DSPy 3.2.x programs through spec, program, metric and baseline; extend to optimization and export when requested and justified by task budget. Orchestrates the other 31 DSPy skills (dspy-adversarial-review, dspy-autodialectics, dspy-book-agents, dspy-book-coding-agents, dspy-book-datasets, dspy-book-eight-steps, dspy-book-metrics, dspy-book-modules, dspy-book-optimizers, dspy-book-production, dspy-book-use-cases, dspy-clarify, dspy-context-engineering-book, dspy-deep-refine, dspy-drg-kg, dspy-evaluation-harness, dspy-fundamentals, dspy-gepa-optimizer, dspy-local-runtime, dspy-optimizer-selection, dspy-production, dspy-reflect-loop, dspy-refrag, dspy-retrieval, dspy-rlm-hooks, dspy-rlm-module, dspy-rlm-workflow, dspy-tara-rag, dspy-tetraframe, dspy-tools-cli, dspy-wiki-compile) in the correct order. Use for greenfield DSPy builds; prototypes may stop at a validated baseline.
 when_to_use: User wants to build, optimize, and ship a new DSPy pipeline; says "full workflow" / "end to end" / "from scratch"; or needs the standard loop applied to a greenfield task.
 ---
 
@@ -29,6 +29,9 @@ Rephrase the user's task in one sentence. Identify inputs, outputs, the quality 
 | Content moves into an authoritative store, or a statement is vague | clarify gate → `dspy-clarify` |
 | A contested or hard-to-reverse decision (merge/supersede a page, resolve a conflict, pick a design) | four-corner assessment → `dspy-tetraframe` |
 | Output drifts, fakes completion or self-certifies | contract + dialectic + independent verify + slop gate → `dspy-autodialectics` |
+| Raw documents must become a cited, maintained wiki | two-phase compile, decision rules, knowledge diff → `dspy-wiki-compile` |
+| An artifact needs a second model's objections before it gains authority | reviewer ≠ writer, demotion, refine to target → `dspy-adversarial-review` |
+| No API key, only the Claude Code CLI | `BaseLM` over `claude -p`, backend selection → `dspy-local-runtime` |
 
 ### 2. Program
 
@@ -172,7 +175,9 @@ Once a program has a metric, three skills keep improving it and what it works wi
 | precision gate | `dspy-clarify` | what a claim, task or query actually asserts | explicit scope, bound terms, open questions |
 | decision assessment | `dspy-tetraframe` | the frame a decision is made in | four isolated corners, contradiction map, verified P* |
 | honesty gate | `dspy-autodialectics` | which run is accepted, which challenger is promoted | slop score (also a GEPA metric term) + canaries |
+| knowledge compile | `dspy-wiki-compile` | the wiki the programs read from | cited claims, legal decisions, consistent diffs |
+| independent review | `dspy-adversarial-review` | which page or draft gains authority | a second model's overstated / unsupported findings |
 
-Order per cycle: reflect (new gold from corrections) → GEPA (re-optimize; fold the autodialectics slop score into the metric) → autodialectics gate (promote the challenger only if score is up, slop is not, canaries pass) → deep-refine (fix the base for queries that still fail) → rlm-workflow (verified execution). Clarify runs at every boundary where content changes authority: before decomposition, before refining the base for a query, before promotion. TetraFrame runs before a contested decision is recorded — a deep-refine proposal that merges, supersedes or deletes, a promotion that contradicts the store, a design choice with two camps — and its run is cited by the decision. Every loop is dry-run-first and keeps a human approval on writes.
+Order per cycle: reflect (new gold from corrections) → GEPA (re-optimize; fold the autodialectics slop score into the metric) → autodialectics gate (promote the challenger only if score is up, slop is not, canaries pass) → deep-refine (fix the base for queries that still fail) → rlm-workflow (verified execution). Clarify runs at every boundary where content changes authority: before decomposition, before refining the base for a query, before promotion. TetraFrame runs before a contested decision is recorded — a deep-refine proposal that merges, supersedes or deletes, a promotion that contradicts the store, a design choice with two camps — and its run is cited by the decision. Adversarial review runs before a page or draft gains authority, with a reviewer LM that is asserted to differ from the writer. On a machine without an API key the whole loop runs through `dspy-local-runtime`. Every loop is dry-run-first and keeps a human approval on writes.
 
 ## Runnable scaffold → [example_pipeline.py](example_pipeline.py)

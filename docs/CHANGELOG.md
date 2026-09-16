@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.0 — 2026-09-16
+
+Merge of two parallel skill lines. Both added skills to the same pack; this release is their union, and the version supersedes the `0.7.0` each claimed independently.
+
 ## v0.9.0 — 2026-09-16
 
 ### The book, split by chapter
@@ -76,6 +80,19 @@ Every API claim in the three skills was read off the installed wheel with `inspe
 
 - `pytest tests/` -> 249 passed
 - 14 of the 15 `skills/*/example_*.py --dry-run` pass, including the three new ones. `skills/dspy-rlm-module/example_rlm.py` still fails in an environment that resolves DSPy 3.3.x, where `dspy.RLM` renamed `max_iterations` to `max_iters`. That failure predates this release and is untouched here: the pack targets the DSPy 3.2.x series, and retargeting the RLM surface is a separate decision.
+## v0.7.0 — 2026-09-16
+
+### Three new skills: the wiki loop, the independent judge, the local runtime
+
+- Added `dspy-wiki-compile` — the Karpathy LLM-wiki pattern as a DSPy program, with the details from `llm-wiki-agent`, `llm-wiki-compiler` (two-phase compile, line-range citations), `synthadoc` (decision rules flag / update / create, active-page protection, truncation flag) and `quicky-wiki` (knowledge diff). `BatchCompile` extracts every source before merging any concept, decides `create` in code, and returns drafts only. `compile_metric` is deterministic on five axes (citations resolve, decisions legal, merge, diff consistency, links + language) and names every deficit.
+- Added `dspy-adversarial-review` — an independent judge that cannot rewrite, from `synthadoc`'s adversarial gate, AutoSci's `/review` + `/refine`, quicky-wiki's redteam and llm-wiki-compiler's citation-support judge. `assert_independent` refuses a reviewer that is the writer; `Review` carries overstated claims with the evidence they would need; `demotion` changes status, never content; `review_refine` wraps the writer in `dspy.Refine` with the review score as reward; `judge_metric` scores the reviewer's precision and recall so GEPA cannot just make it harsher. Positioned against `dspy-autodialectics` (program-run honesty vs artifact review by a second model).
+- Added `dspy-local-runtime` — the `Hmbown/dspy-local` pattern: a `dspy.BaseLM` over `claude -p --output-format json`, backend selection (`api · claude-cli · auto`), the kwargs the CLI cannot honour and what each program loses, a call budget, and GEPA through the CLI. The example's `--probe` makes one real call; verified on DSPy 3.2.1.
+- `dspy-advanced-workflow` routing and loop rows; README, `docs/usage.md`, `docs/installation.md`, manifests → 0.7.0.
+
+### Validation
+
+- `pytest tests/` -> passes with the three new skills
+- all fifteen `skills/*/example_*.py --dry-run` pass under DSPy 3.2.1; `example_local_runtime.py --probe` answers through the CLI
 
 ## v0.6.0 — 2026-09-15
 
