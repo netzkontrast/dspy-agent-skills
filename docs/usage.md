@@ -1,6 +1,6 @@
 # Usage Guide
 
-## The eleven skills at a glance
+## The fourteen skills at a glance
 
 | Skill | Invoke when | Depends on |
 |---|---|---|
@@ -14,6 +14,9 @@
 | `dspy-clarify` | A claim, task or query must be made precise before it changes authority (promotion, decomposition, refinement) | `dspy-evaluation-harness` |
 | `dspy-tetraframe` | A contested or hard-to-reverse decision must be assessed before it is recorded (wiki merge/supersede, promotion conflict, design/storyform choice) | `dspy-evaluation-harness`, `dspy-clarify` |
 | `dspy-autodialectics` | A program that drifts, fakes completion or self-certifies; anti-slop gate and GEPA slop metric; champion/challenger promotion | `dspy-evaluation-harness`, `dspy-gepa-optimizer` |
+| `dspy-wiki-compile` | Raw documents must become a cited, maintained wiki; a reviewed page must not be overwritten; the same concept in several sources | `dspy-evaluation-harness`, `dspy-clarify` |
+| `dspy-adversarial-review` | A page, claim or draft is about to gain authority and needs a second model's objections; refine to a target score | `dspy-evaluation-harness`, `dspy-autodialectics` |
+| `dspy-local-runtime` | No API key, `claude` on PATH; DSPy and GEPA on the Claude Code subscription | `dspy-fundamentals` |
 | `dspy-advanced-workflow` | Full greenfield DSPy build and the self-optimizing loop | all others |
 
 Claude Code / Codex auto-select skills by matching the `description` field. You don't need to invoke them manually in most cases.
@@ -73,6 +76,24 @@ The agent loads `dspy-tetraframe`: the seed is distilled to one predicate, four 
 > "It keeps saying 'done' with no tests. Gate it."
 
 The agent loads `dspy-autodialectics`, Tier 0 first: compile the contract, run the deterministic slop score and gate on the existing output (no LM calls). Only if the program is rebuilt does it add the typed thesis → antithesis → synthesis plan and the independent verifier; champion/challenger evolution needs a benchmark with canaries.
+
+### Compiling a wiki from sources
+
+> "Ingest these 25 research notes into the wiki without touching the pages I already reviewed."
+
+The agent loads `dspy-wiki-compile`: every source is triaged and extracted with line-range citations, concepts are merged across the batch, each existing page gets a flag / update / create decision with active-page protection, and the knowledge diff is printed before anything is written.
+
+### An independent review
+
+> "Before this page goes to reviewed, have a different model tear it apart."
+
+The agent loads `dspy-adversarial-review`: a reviewer LM that is asserted to differ from the writer quotes every overstated claim with the evidence it would need, lists unsupported claims, scores 1–10, and the demotion rule decides whether the page stays or becomes contested.
+
+### Running without an API key
+
+> "I only have Claude Code here, no key. Can GEPA still run?"
+
+The agent loads `dspy-local-runtime`: a `BaseLM` over `claude -p`, backend selection, the kwargs the CLI strips, and a call budget for evaluation and GEPA on the subscription.
 
 ### Explicit invocation
 
@@ -157,6 +178,15 @@ uv run python example_tetraframe.py --dry-run
 
 cd ../dspy-autodialectics
 uv run python example_autodialectics.py --dry-run
+
+cd ../dspy-wiki-compile
+uv run python example_wiki_compile.py --dry-run
+
+cd ../dspy-adversarial-review
+uv run python example_adversarial_review.py --dry-run
+
+cd ../dspy-local-runtime
+uv run python example_local_runtime.py --dry-run
 
 cd ../dspy-advanced-workflow
 uv run python example_pipeline.py --dry-run

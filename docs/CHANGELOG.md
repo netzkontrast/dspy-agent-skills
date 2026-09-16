@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.7.0 — 2026-09-16
+
+### Three new skills: the wiki loop, the independent judge, the local runtime
+
+- Added `dspy-wiki-compile` — the Karpathy LLM-wiki pattern as a DSPy program, with the details from `llm-wiki-agent`, `llm-wiki-compiler` (two-phase compile, line-range citations), `synthadoc` (decision rules flag / update / create, active-page protection, truncation flag) and `quicky-wiki` (knowledge diff). `BatchCompile` extracts every source before merging any concept, decides `create` in code, and returns drafts only. `compile_metric` is deterministic on five axes (citations resolve, decisions legal, merge, diff consistency, links + language) and names every deficit.
+- Added `dspy-adversarial-review` — an independent judge that cannot rewrite, from `synthadoc`'s adversarial gate, AutoSci's `/review` + `/refine`, quicky-wiki's redteam and llm-wiki-compiler's citation-support judge. `assert_independent` refuses a reviewer that is the writer; `Review` carries overstated claims with the evidence they would need; `demotion` changes status, never content; `review_refine` wraps the writer in `dspy.Refine` with the review score as reward; `judge_metric` scores the reviewer's precision and recall so GEPA cannot just make it harsher. Positioned against `dspy-autodialectics` (program-run honesty vs artifact review by a second model).
+- Added `dspy-local-runtime` — the `Hmbown/dspy-local` pattern: a `dspy.BaseLM` over `claude -p --output-format json`, backend selection (`api · claude-cli · auto`), the kwargs the CLI cannot honour and what each program loses, a call budget, and GEPA through the CLI. The example's `--probe` makes one real call; verified on DSPy 3.2.1.
+- `dspy-advanced-workflow` routing and loop rows; README, `docs/usage.md`, `docs/installation.md`, manifests → 0.7.0.
+
+### Validation
+
+- `pytest tests/` -> passes with the three new skills
+- all fifteen `skills/*/example_*.py --dry-run` pass under DSPy 3.2.1; `example_local_runtime.py --probe` answers through the CLI
+
 ## v0.6.0 — 2026-09-15
 
 ### New skill: `dspy-autodialectics`
