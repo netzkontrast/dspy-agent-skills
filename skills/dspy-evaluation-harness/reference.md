@@ -1,6 +1,6 @@
 # DSPy Evaluation Harness — API Reference
 
-Source: https://dspy.ai/api/evaluation/Evaluate/ (DSPy 3.2.x).
+Source: https://dspy.ai/api/evaluation/Evaluate/ (DSPy 3.3.x).
 
 ## `dspy.Evaluate`
 
@@ -48,7 +48,7 @@ Return values:
 - **`dspy.Prediction(score=float, feedback=str)`** — GEPA-compatible; feedback is fed to the reflection LM. This is the recommended shape for any metric that will be used with an optimizer.
 - `bool` — treated as 0.0 / 1.0.
 
-**Why not a dict or string?** A dict looks like it should work (it has `score` and `feedback` keys), and a string looks like natural feedback, but `dspy.Evaluate` aggregates per-example outputs via `sum()`. Under DSPy 3.2.1, literal dict and string metric returns raise `TypeError`. `dspy.Prediction` defines `__float__`/`__add__` so it aggregates correctly while preserving feedback.
+**Why not a dict or string?** A dict looks like it should work (it has `score` and `feedback` keys), and a string looks like natural feedback, but `dspy.Evaluate` aggregates per-example outputs via `sum()`. Under DSPy 3.3.1, literal dict and string metric returns raise `TypeError`. `dspy.Prediction` defines `__float__`/`__add__` so it aggregates correctly while preserving feedback.
 
 GEPA's per-predictor feedback: when `pred_name` is non-None, return feedback targeted at *that* predictor's trace. This lets GEPA assign credit.
 

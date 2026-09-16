@@ -4,7 +4,7 @@ Guidance for Claude Code (or any agent) working inside this repo.
 
 ## What this repo is
 
-A pack of agent skills that teaches coding agents to build, optimize, and ship DSPy 3.2.x programs. It is designed to install cleanly into both Claude Code (`~/.claude/skills/`) and Codex CLI (`~/.agents/skills/`).
+A pack of agent skills that teaches coding agents to build, optimize, and ship DSPy 3.3.x programs. It is designed to install cleanly into both Claude Code (`~/.claude/skills/`) and Codex CLI (`~/.agents/skills/`).
 
 The skills themselves are in `skills/<name>/SKILL.md`. The product is Markdown; Python files in `skills/*/example_*.py` are runnable smoke tests, not library code.
 
@@ -18,7 +18,7 @@ uv run --with pytest python -m pytest tests/ -v
 for f in skills/*/example_*.py; do uv run --with dspy python "$f" --dry-run; done
 
 # Validate the live DSPy API surface taught by these skills
-env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python scripts/check_dspy_surface.py
+env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 python scripts/check_dspy_surface.py
 
 # Install skills locally into Claude Code and Codex (symlinks, idempotent)
 ./scripts/install.sh
@@ -31,10 +31,10 @@ cd skills/dspy-advanced-workflow
 OPENAI_API_KEY=... uv run --with dspy python example_pipeline.py --auto light
 ```
 
-If `uv run --with dspy` unexpectedly resolves an older DSPy release, check for `UV_EXCLUDE_NEWER` or another resolver policy that hides recent uploads. For an exact DSPy 3.2.1 validation run, use:
+If `uv run --with dspy` unexpectedly resolves an older DSPy release, check for `UV_EXCLUDE_NEWER` or another resolver policy that hides recent uploads. For an exact DSPy 3.3.1 validation run, use:
 
 ```bash
-env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python -c 'import dspy; print(dspy.__version__)'
+env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 python -c 'import dspy; print(dspy.__version__)'
 ```
 
 ## Authoring / editing conventions
@@ -58,7 +58,7 @@ Keep `SKILL.md` focused and under ~500 lines. Push deep API detail into `referen
 
 ### Grounding claims
 
-Every DSPy API claim must be verifiable against https://dspy.ai/ for DSPy 3.2.x. If you update a signature or parameter, re-check the docs and update `reference.md` in lockstep.
+Every DSPy API claim must be verifiable against https://dspy.ai/ for DSPy 3.3.x. If you update a signature or parameter, re-check the docs and update `reference.md` in lockstep.
 
 ### When adding a new skill
 

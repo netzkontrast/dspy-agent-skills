@@ -2,7 +2,7 @@
 
 Source: `rlm-workflow` skill suite (rlm-distill, rlm-decompose, rlm-synthesize,
 rlm-verify, rlm-workflow; after Zhang, Kraska, Khattab, *Recursive Language
-Models*, arXiv:2512.24601) mapped onto the DSPy 3.2.1 surface
+Models*, arXiv:2512.24601) mapped onto the DSPy 3.3.1 surface
 (`dspy.Refine`, `dspy.BestOfN`, `dspy.RLM`, `dspy.GEPA`).
 
 ## Pydantic models
@@ -105,7 +105,7 @@ Feedback strings must say *which sub-problem or module* failed and *what good
 looks like*; GEPA reads them with `pred_name` set to the predictor under
 reflection, so per-module blame in the text is what makes credit assignment work.
 
-## `dspy.Refine` / `dspy.BestOfN` (DSPy 3.2.1)
+## `dspy.Refine` / `dspy.BestOfN` (DSPy 3.3.1)
 
 ```python
 dspy.Refine(module: dspy.Module, N: int,

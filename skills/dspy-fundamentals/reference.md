@@ -1,6 +1,6 @@
 # DSPy Fundamentals — API Reference
 
-Extended detail for `dspy-fundamentals`. Source: https://dspy.ai/api/ and https://dspy.ai/tutorials/cache/ (DSPy 3.2.1, May 2026).
+Extended detail for `dspy-fundamentals`. Source: https://dspy.ai/api/ and https://dspy.ai/tutorials/cache/ (DSPy 3.3.1, September 2026).
 
 ## `dspy.configure`
 
@@ -58,7 +58,7 @@ class Sig(dspy.Signature):
 
 Fields support any serializable type including Pydantic models, `list[T]`, `dict[K, V]`, `Literal[...]`.
 
-In DSPy 3.2.x, `prefix=`, `format=`, and `parser=` on `InputField` / `OutputField` are deprecated no-ops. Use `desc=` plus real Python types instead.
+In DSPy 3.3.x, `prefix=`, `format=`, and `parser=` on `InputField` / `OutputField` are deprecated no-ops. Use `desc=` plus real Python types instead.
 
 ## Predictor constructors
 
@@ -67,8 +67,8 @@ In DSPy 3.2.x, `prefix=`, `format=`, and `parser=` on `InputField` / `OutputFiel
 | `dspy.Predict` | `Predict(signature, callbacks=None, **config)` |
 | `dspy.ChainOfThought` | `ChainOfThought(signature, rationale_field=None, rationale_field_type=str, **config)` |
 | `dspy.ReAct` | `ReAct(signature: type[Signature], tools: list[Callable], max_iters: int = 20)` |
-| `dspy.ProgramOfThought` | `ProgramOfThought(signature, max_iters: int = 3, interpreter: PythonInterpreter \| None = None)` |
-| `dspy.RLM` | `RLM(signature, max_iterations=20, max_llm_calls=50, max_output_chars=10_000, verbose=False, tools=None, sub_lm=None, interpreter=None)` |
+| `dspy.ProgramOfThought` | `ProgramOfThought(signature, max_iters: int = 3, interpreter_factory: Callable[[], CodeInterpreter] = PythonInterpreter)` |
+| `dspy.RLM` | `RLM(signature, max_iters=20, max_llm_calls=50, max_output_chars=10_000, verbose=False, tools=None, sub_lm=None, interpreter_factory=PythonInterpreter)` |
 
 ## `dspy.Module`
 
@@ -82,7 +82,7 @@ Base class. Override `forward(self, **kwargs) -> dspy.Prediction`. Key methods:
 - `.get_lm()` — the module's LM (falls back to `dspy.settings.lm`).
 - `.batch(examples, num_threads=8)` — parallel execution.
 
-## Custom LM backends (3.2.x)
+## Custom LM backends (3.3.x)
 
 If `dspy.LM("provider/model")` is not enough, subclass `dspy.BaseLM`.
 
@@ -108,7 +108,7 @@ class MyLM(dspy.BaseLM):
         ...
 ```
 
-In 3.2.x, DSPy's adapters read those capability properties directly from `BaseLM`, which makes custom backends less coupled to LiteLLM internals. If your provider throws a context-window exception, translate it to `dspy.ContextWindowExceededError(model=self.model, message=...)` so DSPy's retry/truncation logic can respond correctly.
+In 3.3.x, DSPy's adapters read those capability properties directly from `BaseLM`, which makes custom backends less coupled to LiteLLM internals. If your provider throws a context-window exception, translate it to `dspy.ContextWindowExceededError(model=self.model, message=...)` so DSPy's retry/truncation logic can respond correctly.
 
 ## Cache and production safety
 

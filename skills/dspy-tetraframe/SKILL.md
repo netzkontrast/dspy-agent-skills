@@ -10,7 +10,7 @@ when_to_use: >-
   recorded decision.
 ---
 
-# DSPy TetraFrame (3.2.x)
+# DSPy TetraFrame (3.3.x)
 
 Port of `tetraframe-dspy` (Hmbown, MIT) as a compact DSPy program. The
 method refuses the two lazy outcomes of a debate: picking a side and

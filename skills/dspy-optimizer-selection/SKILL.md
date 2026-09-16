@@ -16,7 +16,7 @@ when_to_use: >-
   optimization has plateaued and weights are the next lever.
 ---
 
-# DSPy Optimizer Selection (3.2.x)
+# DSPy Optimizer Selection (3.3.x)
 
 Consolidated from the optimizer skills of `OmidZamani/dspy-skills` (MIT). The
 rule this skill exists to enforce: **measure the uncompiled program first, then

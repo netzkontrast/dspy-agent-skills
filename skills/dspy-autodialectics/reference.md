@@ -2,7 +2,7 @@
 
 Source: `autodialectics` (`contract/compiler.py`, `dialectic/engine.py`,
 `evaluation/slop.py`, `evolution/gepa_optimizer.py`, `exploration/rlm_explorer.py`,
-`schemas/core.py`) mapped onto DSPy 3.2.1. The numbers below are the
+`schemas/core.py`) mapped onto DSPy 3.3.1. The numbers below are the
 original's; the example script implements them verbatim so they can be run
 instead of re-read.
 

@@ -8,7 +8,7 @@ when_to_use: >-
   where unanswerable questions should turn into reviewed edits with an audit trace.
 ---
 
-# DSPy Deep Refine (3.2.x)
+# DSPy Deep Refine (3.3.x)
 
 Port of DeepRefine (HKUST-KnowComp, arXiv:2605.10488; agent adapter
 `DeepRefine-Skill`) into DSPy. DeepRefine treats a question the knowledge base

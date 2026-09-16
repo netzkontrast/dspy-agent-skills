@@ -15,7 +15,7 @@ when_to_use: >-
   retriever is needed before refining a knowledge base or auditing citations.
 ---
 
-# DSPy Retrieval (3.2.x)
+# DSPy Retrieval (3.3.x)
 
 Consolidated from `dspy-embedding-retrieval` and `dspy-rag-pipeline` of
 `OmidZamani/dspy-skills` (MIT), corrected to the retriever-as-argument shape

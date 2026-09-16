@@ -1,6 +1,6 @@
 ---
 name: dspy-rlm-workflow
-description: Solve context-heavy, multi-step problems as a DSPy 3.2.x program using the Recursive Language Model workflow — distill the context, decompose into a dependency-ordered set of sub-problems, solve each (recursing when needed), synthesize with an explicit consistency check, then verify through a three-tier cascade whose result doubles as the GEPA metric. Iterate at runtime with dspy.Refine and at compile time with GEPA. Use when the input is large, the task is multi-step, or quality must be verified before delivery.
+description: Solve context-heavy, multi-step problems as a DSPy 3.3.x program using the Recursive Language Model workflow — distill the context, decompose into a dependency-ordered set of sub-problems, solve each (recursing when needed), synthesize with an explicit consistency check, then verify through a three-tier cascade whose result doubles as the GEPA metric. Iterate at runtime with dspy.Refine and at compile time with GEPA. Use when the input is large, the task is multi-step, or quality must be verified before delivery.
 when_to_use: >-
   User says "rlm workflow", "decompose this", "distill the context", "too much
   context", "multi-step", "verify before delivery"; the task spans many files,
@@ -8,7 +8,7 @@ when_to_use: >-
   or the user wants a verified, iterated result instead of a one-shot answer.
 ---
 
-# DSPy RLM Workflow (3.2.x)
+# DSPy RLM Workflow (3.3.x)
 
 Port of the `rlm-workflow` skill suite (distill → decompose → solve → synthesize
 → verify → iterate, after the Recursive Language Models paper, arXiv:2512.24601)

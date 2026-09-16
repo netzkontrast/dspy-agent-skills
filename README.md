@@ -1,14 +1,14 @@
 # DSPy Agent Skills
 
-[![DSPy 3.2.x](https://img.shields.io/badge/DSPy-3.2.x-0A7B83)](https://dspy.ai/)
+[![DSPy 3.3.x](https://img.shields.io/badge/DSPy-3.3.x-0A7B83)](https://dspy.ai/)
 
-**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of thirty-two agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
+**Production-grade DSPy 3.3.x skills for coding agents.** A synthesized, spec-compliant pack of thirty-two agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
 
-- ✅ Validated against DSPy 3.2.1 (the real API, not inferred from stale docs)
+- ✅ Validated against DSPy 3.3.1 (the real API, not inferred from stale docs)
 - ✅ Single source of truth for both **Claude Code** and **Codex CLI**
 - ✅ Progressive disclosure (short `SKILL.md` + deep `reference.md`)
 - ✅ Runnable `example_*.py` scripts with offline `--dry-run`
-- ✅ Includes a DSPy 3.2.x `BetterTogether` chaining example
+- ✅ Includes a DSPy 3.3.x `BetterTogether` chaining example
 - ✅ Plugin manifest + marketplace manifest for one-click install
 - ✅ Validation tests for frontmatter spec, JSON schema, Python AST, skill-doc correctness, and version alignment
 
@@ -105,7 +105,7 @@ The refreshed `01` and `02` artifacts use the paid pair `openrouter/mistralai/mi
 
 Every API claim is grounded in:
 
-- https://dspy.ai/ (official docs, DSPy 3.2.x)
+- https://dspy.ai/ (official docs, DSPy 3.3.x)
 - https://code.claude.com/docs/en/skills.md (Claude Code skill spec)
 - https://developers.openai.com/codex/skills (Codex skill spec)
 
@@ -119,22 +119,22 @@ uv run --with pytest python -m pytest tests/ -v
 for f in skills/*/example_*.py; do uv run --with dspy python "$f" --dry-run; done
 
 # Validate the current DSPy API surface used by these skills
-env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python scripts/check_dspy_surface.py
+env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 python scripts/check_dspy_surface.py
 
 # Live GEPA run (requires OPENAI_API_KEY)
 cd skills/dspy-advanced-workflow
 OPENAI_API_KEY=... uv run --with dspy python example_pipeline.py --auto light
 ```
 
-If `uv run --with dspy` resolves an older DSPy release instead of the current `3.2.1` wheel, check whether `UV_EXCLUDE_NEWER` or a stale package mirror is hiding the new release. The exact 3.2.1 override we validated for this repo is:
+If `uv run --with dspy` resolves an older DSPy release instead of the current `3.3.1` wheel, check whether `UV_EXCLUDE_NEWER` or a stale package mirror is hiding the new release. The exact 3.3.1 override we validated for this repo is:
 
 ```bash
-env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python -c 'import dspy; print(dspy.__version__)'
+env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 python -c 'import dspy; print(dspy.__version__)'
 ```
 
 ## Compatibility
 
-- **DSPy**: 3.2.x (tested against 3.2.1; committed example artifacts remain explicitly labeled by the DSPy version that produced them)
+- **DSPy**: 3.3.x (tested against 3.3.1; committed example artifacts remain explicitly labeled by the DSPy version that produced them)
 - **Claude Code**: current (skill spec as of 2026-04-17)
 - **Codex CLI**: current Agent Skills format
 - **Python**: 3.10+
@@ -161,7 +161,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v0.10.0** • Targets DSPy 3.2.x
+**v0.11.0** • Targets DSPy 3.3.x
 
 ## License
 

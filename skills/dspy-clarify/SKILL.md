@@ -9,7 +9,7 @@ when_to_use: >-
   down before a knowledge base is changed for it.
 ---
 
-# DSPy Clarify (3.2.x)
+# DSPy Clarify (3.3.x)
 
 Transposition of the `clarify` code skill (Hmbown/clarify, Apache 2.0: reveal
 intent, make the implicit explicit, add nothing, remove noise, never change

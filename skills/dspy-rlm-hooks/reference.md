@@ -41,7 +41,7 @@ PostIterationOutput(history: Any, stop: bool = False)
 `enable_rlm_hooks` validates the instance before patching and raises
 `AttributeError` if it lacks `_execute_iteration`, `_aexecute_iteration`,
 `_process_execution_result`, `generate_action`, `verbose`, or a
-`max_iters`/`max_iterations` attribute. Patches are bound per instance with
+`max_iters` attribute (named `max_iterations` before DSPy 3.3.0). Patches are bound per instance with
 `MethodType`; two RLM objects can carry different hooks.
 
 Because the patch targets are private DSPy names, treat the pair

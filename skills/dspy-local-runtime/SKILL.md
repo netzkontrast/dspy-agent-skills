@@ -16,7 +16,7 @@ when_to_use: >-
   run inside a Claude Code session or a CI box that only has the CLI.
 ---
 
-# DSPy Local Runtime (3.2.x)
+# DSPy Local Runtime (3.3.x)
 
 `dspy.LM` speaks to providers through LiteLLM and needs a key. The Claude
 Code CLI already holds a logged-in session, and `claude -p` answers a prompt

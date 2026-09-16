@@ -67,10 +67,25 @@ Skills KP's CLAUDE.md should name, beyond the five it already lists:
 | `dspy-autodialectics` | gate for generated canon; complements `lit_critic_gate.py` |
 | `dspy-clarify` | the promotion boundary Wiki → Canon, where a D-xx decision is required |
 
-**The version contract is the load-bearing part.** KP pins `dspy==3.2.1`. This
-pack validates against the 3.2.x series. Whoever moves first must tell the
-other, because KP's closed enums and this pack's asserted signatures both break
-silently on a DSPy minor bump.
+**The version contract is the load-bearing part.** KP pins `dspy==3.2.1`
+(`requirements-dspy.txt`, commented "Pinned to the DSPy release the
+dspy-agent-skills pack is validated against"). That comment is now stale:
+**this pack moved first.** It validates against 3.3.1 and its floor is
+`dspy>=3.3.0`, because DSPy 3.3.0 renamed `dspy.RLM`'s `max_iterations` to
+`max_iters` and swapped `interpreter=` for `interpreter_factory=`.
+
+The bump is safe on KP's side, and that is a checked claim rather than an
+assumption. `tools/kpwiki/` uses exactly twelve DSPy symbols — `ChainOfThought`,
+`Evaluate`, `Example`, `InputField`, `LM`, `Module`, `OutputField`, `Predict`,
+`Prediction`, `Signature`, `configure`, `context` — and none of them changed
+between 3.2.1 and 3.3.1. KP touches no RLM, `ProgramOfThought`, `CodeAct` or
+`dspy.Image` call site, which is where every breaking rename landed. So KP can
+move its pin to `dspy==3.3.1` and re-run `scripts/setup_dspy.sh --check`
+without editing a program.
+
+That pin is KP's to change, not this pack's, so nothing in the KP repo was
+touched here. What this section now owes KP is the notice the contract asks
+for, and this is it.
 
 ## Part 2 — Port verdicts, per upstream
 

@@ -19,7 +19,7 @@ when_to_use: >-
   into one page instead of duplicating.
 ---
 
-# DSPy Wiki Compile (3.2.x)
+# DSPy Wiki Compile (3.3.x)
 
 The Karpathy LLM-wiki pattern as a DSPy program: **raw sources are immutable,
 the LLM maintains the wiki, a schema is the contract.** Five repos taught the

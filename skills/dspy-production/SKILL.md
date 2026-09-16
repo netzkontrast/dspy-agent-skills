@@ -15,7 +15,7 @@ when_to_use: >-
   a notebook; a program behaves differently in production than in evaluation.
 ---
 
-# DSPy Production (3.2.x)
+# DSPy Production (3.3.x)
 
 Consolidated from `dspy-production-deployment` and `dspy-debugging-observability`
 of `OmidZamani/dspy-skills` (MIT). They are one skill here because the

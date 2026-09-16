@@ -161,7 +161,7 @@ print("Optimized:", evaluator(optimized).score)
 optimized.save("program.json", save_program=False)
 ```
 
-On DSPy 3.2.x, module calls now warn by default when you pass extra input fields or values that don't match the signature's declared types. Treat those warnings as a callsite bug first; only disable them with `dspy.configure(warn_on_type_mismatch=False)` when you intentionally pass pre-serialized values.
+On DSPy 3.3.x, module calls warn by default when you pass extra input fields or values that don't match the signature's declared types. Treat those warnings as a callsite bug first; only disable them with `dspy.configure(warn_on_type_mismatch=False)` when you intentionally pass pre-serialized values.
 
 ## Running the bundled example scripts
 
@@ -272,7 +272,7 @@ Live runs require `OPENAI_API_KEY` (or equivalent for the chosen `--model`).
 Before changing skill guidance for a new DSPy release, verify the live wheel instead of inferring from prose docs:
 
 ```bash
-env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python scripts/check_dspy_surface.py
+env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 python scripts/check_dspy_surface.py
 ```
 
 ## Getting help
