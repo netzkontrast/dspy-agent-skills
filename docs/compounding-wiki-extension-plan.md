@@ -85,7 +85,8 @@ class Learning(BaseModel):
     id: str                       # D-07, kap-06-finding-3, …
     source: LearningSource
     scope: LearningScope
-    statement: str                # one sentence, imperative, German if it quotes canon
+    statement: str                # one sentence, imperative, English (see D4);
+                                  # quoted canon keeps its source language
     rationale: str
     applies_to: list[str]         # chapter numbers, codex slugs, file paths
     citation: Citation            # reuse the existing model; a learning without a source does not exist
@@ -111,13 +112,13 @@ they can be:
 |---|---|
 | `decision-log*.md` | parse the existing table. Each D-xx row already has an ID, a decision, a rationale and affected chapters — the mapping is mechanical, no LLM needed |
 | `lit-critic` reports | one learning per **rejected** finding, recording what was rejected and why, so it is not re-raised |
-| `agent-memory/*.md` | one learning per bullet under the existing headed sections |
+| `agent-memory/*.md` | one learning per bullet under the existing headed sections; read-only, and nothing is written back (D6) |
 
 The decision-log importer is the highest-value and lowest-risk piece in this
 plan: it is a parser, it needs no model, and it converts twenty-one already-made
 author decisions into a retrievable corpus in one pass.
 
-Nothing writes back to the decision log. It stays the author's document.
+Nothing writes back to the decision log or to `MEMORY.md`. Both stay documents their current writers own; the learnings corpus is a third file tree beside them, not a replacement for either.
 
 ### E3 — Injection as an opt-in wrapper
 
@@ -145,7 +146,7 @@ plan for the `CanonRetriever` seam. There is no reason for two retrieval stacks.
 
 The lit-critic gate and `wiki_lint` are where a learning proves its worth:
 
-- Before raising a finding, check whether an active learning already rejected it. If so, suppress it and cite the learning. That is the compounding effect made concrete: the third chapter's review is cheaper than the first's.
+- Before raising a finding, check whether an active learning already rejected it. If so, report it in a **suppressed** section citing the learning's id, and do not let it drive the exit code. Per D5 it is never dropped: the report shows what was set aside and why. That is the compounding effect made concrete — the third chapter's review is cheaper than the first's, and still auditable.
 - After the author triages, write the new learnings back.
 
 This is additive at both ends: a suppression list and an append. Neither
@@ -156,7 +157,8 @@ changes how a finding is computed.
 - **Never writes `Canon/`, `ncp*.json` or the graph.** Learnings are a Wiki-layer artifact. Promotion still requires a D-xx decision, unchanged.
 - **Adds no service.** No SQLite, no vector database, no daemon. Files and the existing lint.
 - **Does not touch the agency engine.** The provenance graph stays the system of record for canon; learnings are about the *process*, not about the world.
-- **Does not auto-suppress on a model's judgment.** Suppression fires only on an explicit, cited, author-triaged learning.
+- **Does not auto-suppress on a model's judgment.** Suppression fires only on an explicit, cited, author-triaged learning — and is reported rather than hidden (D5).
+- **Does not make any hand-written file generated.** `MEMORY.md` and the decision log keep their current writers (D6).
 - **Changes no existing default.** Every extension point is off until constructed with an argument.
 
 ## Sequence
@@ -190,8 +192,54 @@ Suppression precision is the one to watch. A system that hides real findings to
 look efficient is worse than no system, and it will look like an improvement in
 every other metric.
 
-## Open questions for the author
+## Author decisions
 
-1. Should a learning ever be German? The decisions are German because they quote canon; the surrounding engineering is English. The `statement` field probably mirrors the claim rule — quote in the source language, explain in English.
-2. Should rejected lit-critic findings suppress silently, or always surface with the citation attached? Silent suppression is cheaper; visible suppression is auditable.
-3. Do agent `MEMORY.md` files become generated views of the learnings corpus, or stay hand-maintained alongside it? Two writers on one file is the failure mode.
+The three questions this plan opened are answered. All three tighten the
+additive-only posture rather than loosening it.
+
+### D4 — Learnings are written in English
+
+A learning is an engineering artefact, so it follows the repo's existing split:
+German for canon prose, English for engineering. `statement` and `rationale`
+are English even when the learning was imported from a German source.
+
+This does not license translating canon. The quoted material inside a learning
+keeps its source language, exactly as `metrics.py` already enforces for claims
+with `language_kept`. A learning derived from a lit-critic finding on German
+prose therefore reads as an English statement citing a German line — the same
+shape the D-xx log already uses.
+
+Schema consequence: the `statement` comment in E1 currently reads "German if it
+quotes canon". It becomes "English; quoted canon keeps its source language".
+
+### D5 — Suppression is visible, never silent
+
+A gate still reports a finding it suppresses. The finding is marked suppressed
+and names the `Learning.id` that suppressed it, so the report shows what was
+set aside and on whose authority.
+
+This is the decision the measurement section already argued for. Suppression
+precision is the metric to watch, and a silently suppressed finding cannot be
+measured — a wrong learning would improve every other number while hiding real
+defects. Visible suppression keeps the failure mode discoverable in the place
+someone is already reading.
+
+Consequence for E4: the gate's exit code is still driven by unsuppressed
+`critical` findings, but the report gains a suppressed section. A suppressed
+finding never changes exit 0/1 silently; it changes it visibly.
+
+### D6 — `MEMORY.md` stays hand-written
+
+Agent memory files remain a human-and-agent scratchpad. The learnings layer
+imports **from** them and never writes back.
+
+This keeps the one-writer rule intact. Making `MEMORY.md` a generated view
+would put it in the same category as `Codex/*.md` — never hand-edit, change the
+graph and re-render — and the agents that currently write to it during a
+session would have to stop. That is a behaviour change to existing tooling,
+which is precisely what this plan promised not to do.
+
+Consequence for E2: the agent-memory importer is read-only, and a learning it
+creates carries a `Citation` back to the memory file rather than replacing the
+line it came from. Drift between the two is expected and acceptable — the
+learnings corpus is the durable record, `MEMORY.md` is the working surface.

@@ -71,6 +71,25 @@ that pin is KP's to set.
 `3.2.0` runs that produced them. They are measurements, not claims about the
 current API, and rewriting their labels would have made them lie.
 
+### Six open plan questions answered
+
+Both integration plans ended in questions for the author. All six are answered
+and recorded in the plans as decisions, with what each one changes:
+
+| # | Decision | What it changes |
+|---|---|---|
+| D1 | Canon index covers `Canon/` + graph only, not `Manuscript/` | A draft's own error can never be retrieved as the canon a later draft is checked against |
+| D2 | The codex `kind` enum grows in the engine | `rule`, `motif`, `theme`, `voice`, `character` become real members; the `**Kategorie:**` body line becomes a migration bridge, not the destination |
+| D3 | Three LM roles — extractor, judge, reflection | No new configuration: KP's `lm.py` already defines `worker`/`task`/`reflection` with exactly this separation |
+| D4 | Learnings are written in English | Quoted canon still keeps its source language, as `language_kept` already enforces for claims |
+| D5 | Gate suppression is visible, never silent | A suppressed finding is reported with the learning id that suppressed it, so suppression precision stays measurable |
+| D6 | `MEMORY.md` stays hand-written | The learnings layer imports from agent memory and never writes back; no existing file becomes generated |
+
+D2 is the largest and is now called out as its own step: the `kind` enum
+belongs to the agency engine, so KP cannot widen it unilaterally, and the ~600
+existing entries need an idempotent migration off their `**Kategorie:**` line
+while `render_codex_views.py` reads both shapes.
+
 ### Validation
 
 - `633 passed` (up from 525; the new Rule 10 is parametrized over every teaching file).
