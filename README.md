@@ -2,7 +2,7 @@
 
 [![DSPy 3.2.x](https://img.shields.io/badge/DSPy-3.2.x-0A7B83)](https://dspy.ai/)
 
-**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of fourteen agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
+**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of twenty agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
 
 - ✅ Validated against DSPy 3.2.1 (the real API, not inferred from stale docs)
 - ✅ Single source of truth for both **Claude Code** and **Codex CLI**
@@ -29,7 +29,13 @@
 | [`dspy-optimizer-selection`](skills/dspy-optimizer-selection/SKILL.md) | Picking the cheapest optimizer that fits the data and metric — the whole family, baseline first, escalation on a measured plateau |
 | [`dspy-retrieval`](skills/dspy-retrieval/SKILL.md) | The retrieval half: Embedder, Embeddings, FAISS, persisted indexes, multi-hop, and scoring recall separately from answers |
 | [`dspy-production`](skills/dspy-production/SKILL.md) | Shipping and seeing: cache hardening, save formats, usage, async, streaming, callbacks, MLflow |
-| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the other thirteen, including the self-optimizing loop |
+| [`dspy-refrag`](skills/dspy-refrag/SKILL.md) | REFRAG fragment selection, with its working parts separated from its unimplemented ones |
+| [`dspy-rlm-hooks`](skills/dspy-rlm-hooks/SKILL.md) | Lifecycle hooks and speculative execution for dspy.RLM |
+| [`dspy-drg-kg`](skills/dspy-drg-kg/SKILL.md) | Schema-driven knowledge-graph extraction from text with DRG |
+| [`dspy-tara-rag`](skills/dspy-tara-rag/SKILL.md) | Self-corrective RAG: a ReAct agent with seven retrieval tools and a 4D context score |
+| [`dspy-tools-cli`](skills/dspy-tools-cli/SKILL.md) | The DSPyTools CLI: compile, evaluate and manage DSPy programs from the shell |
+| [`dspy-context-engineering-book`](skills/dspy-context-engineering-book/SKILL.md) | Routing 57 O'Reilly book notebooks — the worked example for almost any DSPy question |
+| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the core skills, including the self-optimizing loop |
 
 ## Install
 
@@ -143,7 +149,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v0.7.0** • Targets DSPy 3.2.x
+**v0.8.0** • Targets DSPy 3.2.x
 
 ## License
 
@@ -161,6 +167,12 @@ Several skills are ports or consolidations of prior work, each credited in its o
 | Skills here | Ported from | License |
 |---|---|---|
 | `dspy-optimizer-selection`, `dspy-retrieval`, `dspy-production` | [OmidZamani/dspy-skills](https://github.com/OmidZamani/dspy-skills) | MIT |
+| `dspy-refrag` | [dspy-refrag](https://github.com/netzkontrast/dspy-refrag) | MIT |
+| `dspy-rlm-hooks` | [dspy-rlm-hooks](https://github.com/netzkontrast/dspy-rlm-hooks) | MIT |
+| `dspy-drg-kg` | [drg-kg](https://github.com/netzkontrast/drg-kg) | MIT |
+| `dspy-tools-cli` | [dspytools](https://github.com/netzkontrast/dspytools) | see repo |
+| `dspy-tara-rag` | [self-corrective-rag](https://github.com/netzkontrast/self-corrective-rag) | README claims MIT; LICENSE file absent |
+| `dspy-context-engineering-book` | [context-engineering-dspy-book](https://github.com/netzkontrast/context-engineering-dspy-book) | MIT |
 | `dspy-tetraframe` | `tetraframe-dspy` (Hmbown) | MIT |
 | `dspy-clarify` | `clarify` (Hmbown) | Apache 2.0 |
 | `dspy-autodialectics` | [autodialectics](https://github.com/Hmbown/autodialectics) | MIT |

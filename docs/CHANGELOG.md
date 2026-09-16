@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.8.0 — 2026-09-16
+
+### Six integration skills, and a plugin plan for Kohärenz Protokoll
+
+Each skill teaches one external project, verified against its source rather than its README. Where a README and the code disagreed, the code is documented and the discrepancy is named.
+
+- Added `dspy-refrag` — REFRAG fragment selection. Documents, with file and line evidence, that the fragment selection never reduces the prompt (`forward` joins every passage and only annotates `(selected: bool)`), that `FAISSRetriever` and `PineconeRetriever` raise `NotImplementedError`, that importing the package requires psycopg2, and that the Weaviate pin contradicts the Weaviate code. One file, `sensor_advanced.py`, is worth vendoring.
+- Added `dspy-rlm-hooks` — the four RLM lifecycle hooks and speculative execution. Covers the order-dependent composition (hooks before speculation, or speculation silently no-ops), the purity requirement for speculated tools, and the LM-free benchmark harness.
+- Added `dspy-drg-kg` — schema-driven knowledge-graph extraction. Leads with the two failure modes that waste the most time: the base install omits DSPy so extraction cannot run, and a missing LM returns an empty graph with only a log warning unless a strict env var is set.
+- Added `dspy-tara-rag` — self-corrective RAG. Documents the seven tools (the README says six), the 4D context score, and that progressive leniency terminates by lowering the bar: a context scoring 27 of 100 is accepted at retry 3. Flags that the claimed MIT `LICENSE` file is absent from the repository.
+- Added `dspy-tools-cli` — the DSPyTools CLI. Separates the commands that work standalone from those needing FalkorDB, Redis or llama-cpp-server, and reports the source counts where they differ from the README's.
+- Added `dspy-context-engineering-book` — a router over the 57 notebooks of the O'Reilly companion repo, mapping each of this pack's optimizer names to its chapter-6 notebook.
+
+### Dependency manifests
+
+- Added `requirements.txt` (dspy, pytest — enough for every dry run and the validators) and `requirements-extras.txt`, grouped by skill. No example requires its extra: each degrades to a deterministic core when the package is absent and asserts the live API surface when present.
+
+### Kohärenz Protokoll plugin plan
+
+- Added `docs/kohaerenz-protokoll-plugin-plan.md`: what to port from each of the six upstreams, with a verdict and a reason per repo, the four concrete integration points in `tools/kpwiki/`, a sequenced plan, and what not to do. Three upstreams are recommended against porting.
+- Added `scaffolding/kp_canon_retriever.py` (design note plus scaffolding only, inert): the `CanonRetriever` seam that `SourceIngest` already accepts and currently fills with a no-op, meaning its canon-conflict check never fires.
+
+### A correction to MMR, found by measuring
+
+The scaffold adds a relevance floor to MMR selection, because plain MMR scores an irrelevant passage `0 - 0 = 0` and a relevant near-duplicate slightly below zero — so the irrelevant one wins. Measured on a four-passage fixture, unguarded MMR selected the passage with zero query similarity at every diversity setting from 0.5 to 0.8. The floor fixes it at every setting; the diversity weight alone never does. Both the scaffold and the `dspy-refrag` skill now teach the floor as mandatory.
+
+### Validation
+
+- `pytest tests/` passes with the six new skills
+- every new example's `--dry-run` passes, both with and without its package installed
+- `dspy-rlm-hooks` and `drg-kg` were installed from source and their asserted API surfaces verified live
+
 ## v0.7.0 — 2026-09-16
 
 ### Three new skills, consolidated from `OmidZamani/dspy-skills` (MIT)

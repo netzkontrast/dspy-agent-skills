@@ -1,0 +1,55 @@
+# Optional dependencies, grouped by the skill that teaches them.
+#
+# None of these are needed for `pytest tests/` or for any example's
+# `--dry-run` path: every example degrades to its deterministic core when the
+# package is absent, and additionally asserts the live API surface when it is
+# present. Install only the group you are actually working in.
+#
+#     pip install -r requirements-extras.txt          # everything
+#     pip install "drg-kg[dspy]"                      # one group
+
+# ── dspy-optimizer-selection ────────────────────────────────────────────
+# MIPROv2's Bayesian search backend. Without it, MIPROv2 falls back to a
+# non-Bayesian search path.
+optuna>=3.0
+
+# ── dspy-retrieval ──────────────────────────────────────────────────────
+# Only needed at or above dspy.Embeddings' brute_force_threshold (20,000
+# passages), where the retriever builds a FAISS index instead of scanning.
+faiss-cpu>=1.8
+# Local embedding models, so dspy.Embedder needs no hosted API.
+sentence-transformers>=3.0
+
+# ── dspy-production ─────────────────────────────────────────────────────
+# mlflow.dspy.autolog() for inference, compile and evaluation traces.
+mlflow>=2.14
+
+# ── dspy-rlm-hooks ──────────────────────────────────────────────────────
+# Lifecycle instrumentation and speculative execution for dspy.RLM.
+# Requires Python >= 3.12. Pin DSPy alongside it: this package patches
+# private RLM internals and its own SECURITY.md says to pin.
+dspy-rlm-hooks>=0.1.14
+
+# ── dspy-drg-kg ─────────────────────────────────────────────────────────
+# Schema-driven knowledge-graph extraction. The PyPI name is `drg-kg`; the
+# import name is `drg`. The base install does NOT pull DSPy, so the [dspy]
+# extra is required for any extraction at all.
+drg-kg[dspy]>=0.1
+
+# ── dspy-refrag ─────────────────────────────────────────────────────────
+# Not on PyPI. Install from source, and read the skill first: several
+# advertised backends raise NotImplementedError.
+#   pip install git+https://github.com/netzkontrast/dspy-refrag
+
+# ── dspy-tools-cli ──────────────────────────────────────────────────────
+# Not on PyPI. Needs Python >= 3.12, and FalkorDB + Redis on :6379 for its
+# graph, memory and semantic-cache command groups.
+#   pip install git+https://github.com/netzkontrast/dspytools
+
+# ── dspy-tara-rag ───────────────────────────────────────────────────────
+# Not on PyPI; a research codebase you clone and run.
+#   git clone https://github.com/netzkontrast/self-corrective-rag && uv sync
+
+# ── dspy-context-engineering-book ───────────────────────────────────────
+# Notebooks, not a library. Clone and run with uv sync.
+#   git clone https://github.com/netzkontrast/context-engineering-dspy-book

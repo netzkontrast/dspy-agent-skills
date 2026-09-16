@@ -1,0 +1,224 @@
+# Making this pack the plugin repo for Kohärenz Protokoll
+
+A plan, not a change. Nothing here is implemented in Kohärenz Protokoll (KP)
+yet; the only code this document ships is the seam scaffold in
+[`scaffolding/kp_canon_retriever.py`](../scaffolding/kp_canon_retriever.py),
+which is inert until KP imports it.
+
+## Why these two repos already fit
+
+KP's `requirements-dspy.txt` says, in its own comment, that its DSPy version is
+*"pinned to the DSPy release the dspy-agent-skills pack is validated against"*.
+The dependency already exists informally. This plan makes it explicit and
+useful in both directions: KP consumes skills, and this pack carries the
+integration knowledge KP needs.
+
+KP's DSPy layer (`tools/kpwiki/`, 523 lines) is already built the way these
+skills teach: typed `dspy.Signature` classes with closed `Literal` enums, no
+prompt strings, and metrics returning `dspy.Prediction(score, feedback)` so
+GEPA can consume them. There is nothing to retrofit.
+
+## The seam that is already waiting
+
+`tools/kpwiki/programs.py` defines the integration point and leaves it empty on
+purpose:
+
+```python
+CanonRetriever = Callable[[list[Claim]], str]
+
+def no_canon_retrieval(_claims: list[Claim]) -> str:
+    """Retriever used in dry runs: nothing retrieved, so nothing can conflict."""
+    return ""
+
+class SourceIngest(dspy.Module):
+    def __init__(self, retrieve_canon: CanonRetriever = no_canon_retrieval):
+```
+
+Its module docstring states the intended evolution: *"BM25 first, graph
+`match_codex_entries` later."* Everything in Part 3 below fills that callable.
+Because it is injected, each step is testable offline and reversible by
+swapping the argument back.
+
+## Part 1 — What this repo has to become
+
+| Item | State | Action |
+|---|---|---|
+| `.claude-plugin/plugin.json` + `marketplace.json` | present, v0.7.0 | none |
+| Skills KP needs | present | none |
+| DSPy version contract | implicit in a comment | state it in both READMEs and keep the pins equal |
+| Integration knowledge for KP's sources | this document plus six new skills | keep current as the upstreams move |
+| Scaffolding KP can import | `scaffolding/` | grow only when KP asks |
+
+KP installs it like any plugin:
+
+```bash
+/plugin marketplace add netzkontrast/dspy-agent-skills
+/plugin install dspy-agent-skills@dspy-agent-skills
+```
+
+Skills KP's CLAUDE.md should name, beyond the five it already lists:
+
+| Skill | KP use |
+|---|---|
+| `dspy-retrieval` | the `CanonRetriever` seam; recall@k separate from answer quality |
+| `dspy-optimizer-selection` | choosing an optimizer for `ingest_metric`, instead of defaulting to GEPA |
+| `dspy-production` | pinning, caching and tracing the ingest runs |
+| `dspy-drg-kg` | Sources to codex-graph extraction |
+| `dspy-autodialectics` | gate for generated canon; complements `lit_critic_gate.py` |
+| `dspy-clarify` | the promotion boundary Wiki → Canon, where a D-xx decision is required |
+
+**The version contract is the load-bearing part.** KP pins `dspy==3.2.1`. This
+pack validates against the 3.2.x series. Whoever moves first must tell the
+other, because KP's closed enums and this pack's asserted signatures both break
+silently on a DSPy minor bump.
+
+## Part 2 — Port verdicts, per upstream
+
+Read the matching skill before acting on any row.
+
+| Upstream | Verdict | What actually moves |
+|---|---|---|
+| **dspy-refrag** | **partial — one file** | `sensor_advanced.py` (MMR and adaptive selection), vendored under MIT with attribution. Nothing else. |
+| **drg-kg** | **adopt as a dependency** | No code copied. `pip install "drg-kg[dspy]"` and a KP-specific schema. |
+| **self-corrective-rag (TARA)** | **port the pattern, not the code** | The 4D context score and progressive-leniency retry, reimplemented in `tools/kpwiki/`. |
+| **dspy-rlm-hooks** | **adopt as a dependency, later** | `pip install dspy-rlm-hooks` when KP has an RLM step. No code copied. |
+| **dspytools** | **do not port** | Overlaps the agency engine KP already runs, and adds FalkorDB and Redis. |
+| **context-engineering-dspy-book** | **do not port** | Reference material. Cite notebooks in review comments. |
+
+Three rows deserve their reasons stated, because they are the ones someone
+would otherwise get wrong.
+
+**dspy-refrag is mostly not worth taking.** Its fragment selection never
+reduces the prompt — `forward` joins every passage and merely annotates
+`(selected: bool)` — so adopting it for context compression would deliver
+nothing measurable. Its FAISS and Pinecone backends raise
+`NotImplementedError`. Importing it drags in psycopg2. Its Weaviate pin
+contradicts its own Weaviate code. One file, `sensor_advanced.py`, is genuinely
+good and self-contained: MMR selection is exactly what KP needs when the top-k
+canon passages are near-duplicates of each other, which they are, because the
+codex is dense with related entries. Take that file. Leave the package.
+
+**dspytools would fight the agency engine.** KP already has a provenance graph
+in `.agency/session.db`, capability verbs that auto-record invocations, and
+skill walking. dspytools brings its own skill graph, its own registry and a
+FalkorDB service. Two systems of record for the same concern is the failure
+this pack's own consolidation rule exists to prevent.
+
+**TARA's code is unlicensed.** Its README claims MIT and links a `LICENSE`
+file that is not in the repository. The 4D scoring idea is public in the paper
+and cheap to reimplement; the repository is not safe to copy from until the
+authors fix that. Reimplement, do not vendor.
+
+## Part 3 — The four concrete integrations
+
+### 3.1 Fill `CanonRetriever` (highest value, lowest risk)
+
+Today `SourceIngest` runs with `no_canon_retrieval`, so `CheckCanonConflict`
+never fires and every ingest reports zero conflicts. That is the single
+biggest correctness gap in the ingest loop: it cannot contradict canon it never
+retrieved.
+
+```python
+retrieve = CanonIndex.load("Plan/wiki/index/canon")      # scaffolding/
+ingest = SourceIngest(retrieve_canon=retrieve)
+```
+
+Build it with `dspy.Embeddings` over `Canon/**/*.md` plus the rendered
+`Codex/` views, chunked per section. Select with MMR from the vendored sensor,
+not by raw top-k, because near-duplicate codex entries otherwise fill the
+context with the same fact four times.
+
+Sequence: build the index, measure recall@k against a hand-built devset of
+claims whose canon location is known, then enable it. `dspy-retrieval` gives
+the recall-versus-answer diagnosis table that tells you whether a bad conflict
+check is a retrieval problem or a signature problem.
+
+Reversible at any point by passing `no_canon_retrieval` again.
+
+### 3.2 Sources to codex graph with drg-kg
+
+KP's codex already is a typed graph: entries with a closed `kind` enum
+(`concept`, `location`, `faction`, `artefact`, `minor-character`), WorldAxioms
+with `severity ∈ {hard, soft}`, StoryTimeEvents, and typed edges. DRG's
+`EnhancedDRGSchema` expresses exactly that shape, so the schema is a
+transcription of rules KP has already decided, not a new ontology.
+
+The value is not replacing the agency verbs that write the graph. It is the
+**proposal** step: read a Source, propose typed entities and relations against
+KP's schema, and hand them to the existing `/ingest` path for human decision.
+DRG's `evidence_for` and `explain` give the provenance that a D-xx decision
+needs.
+
+Two rules that are not optional here:
+
+- Set `DRG_REQUIRE_LM=1`. Without it, a missing key returns an empty graph and a green run. A canon pipeline that silently ingests nothing is worse than one that fails.
+- Keep `enable_implicit_relationships` off for canon work. It adds LLM-inferred edges, and inferred edges must not enter canon without passing the same gate as any other claim.
+
+Nothing DRG proposes may be written to `Canon/` or the graph without the D-xx
+decision the existing rules require. It proposes; the author decides.
+
+### 3.3 A 4D score for canon conflicts
+
+`CheckCanonConflict` currently receives whatever the retriever returned and has
+no way to say *the passages are relevant but insufficient*. TARA's four
+dimensions solve exactly that, and each maps to a repair KP can actually make:
+
+| Dimension | Failing it means | Repair |
+|---|---|---|
+| relevance | wrong canon passages | reformulate the query from the claim entities |
+| coverage | right area, missing entries | retrieve per entity rather than per claim |
+| specificity | too general to adjudicate | pull the codex entry, not the chapter |
+| sufficiency | cannot decide from this | raise an OpenQuestion instead of guessing |
+
+That last row matters most: KP already has `RaiseQuestions` and an explicit
+Rule 0 that says ask rather than assume. A sufficiency score below threshold is
+the machine-checkable trigger for it.
+
+Adopt the dimensions. **Do not adopt the progressive leniency.** TARA lowers
+its threshold on each retry with a floor of 20, so a context scoring 27 out of
+100 is accepted at retry 3. For a canon gate, the correct terminal state is an
+OpenQuestion, not a lowered bar.
+
+### 3.4 RLM hooks for the knowledge fence
+
+Only when KP adds an RLM step. KP's scene-writing loop has a hard constraint —
+a character may only know what they have learned by that scene
+(`what_does_X_know_as_of`) — and `PreIterationOutput.prompt_context` is
+injected into the model's view without being executed. That is the right shape
+for a fence: the knowledge state is stated per iteration, and
+`post_iteration_hook` can stop the run when a violation appears.
+
+Deferred because it patches private DSPy internals. Adopt it when there is an
+RLM step to instrument, and pin DSPy and the hooks package together.
+
+## Part 4 — Sequence
+
+Each step is independently valuable and independently revertible.
+
+| # | Step | Verification | Blocks |
+|---|---|---|---|
+| 1 | Declare the plugin dependency and equalize the DSPy pins | both READMEs name it; pins match | nothing |
+| 2 | Vendor `sensor_advanced.py` into `tools/kpwiki/selection.py` with attribution | MMR beats plain top-k on a near-duplicate fixture | 3 |
+| 3 | Build the canon index and fill `CanonRetriever` | recall@k on a known-location devset | 4, 5 |
+| 4 | Add the 4D context score to the conflict check | conflicts found on a seeded contradiction; sufficiency routes to OpenQuestion | — |
+| 5 | Optimize `SourceIngest` against `ingest_metric` | compiled beats baseline on a held-out set | — |
+| 6 | DRG schema for the codex, proposal-only | proposed entities validate against the closed `kind` enum | — |
+| 7 | RLM hooks, if and when an RLM step exists | fence violation stops the run | — |
+
+Step 3 is where the real gain is. Steps 1 and 2 exist to make it safe.
+
+## Part 5 — What not to do
+
+- Do not let any of this write to `Canon/` or the provenance graph without a D-xx decision. These tools propose.
+- Do not adopt `dspy-refrag` as a package for context compression; measure first and you will find nothing to measure.
+- Do not copy TARA source while its license file is missing.
+- Do not introduce FalkorDB, Redis or a second skill graph alongside the agency engine.
+- Do not move either DSPy pin unilaterally.
+- Do not translate canon prose. These are English engineering tools operating on German canon; claims quote the source language, which `metrics.py` already enforces with `language_kept`.
+- Do not skip the recall measurement in step 3. An unmeasured retriever that returns plausible passages will make the conflict check look like it is working.
+
+## Open questions for the author
+
+1. Should the canon index cover `Manuscript/` chapters as well as `Canon/` and `Codex/`? Retrieving draft prose into a canon-conflict check may be a feature or a contamination.
+2. Is the codex `kind` enum permitted to grow for DRG extraction, or must proposals map onto the existing five with `**Kategorie:**` as the body's first line, as the current ingest rules require?
+3. Which LM roles should the ingest loop use? KP's `lm.py` already separates task, worker and reflection; the plan assumes that split holds.

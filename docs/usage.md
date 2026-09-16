@@ -1,6 +1,6 @@
 # Usage Guide
 
-## The fourteen skills at a glance
+## The twenty skills at a glance
 
 | Skill | Invoke when | Depends on |
 |---|---|---|
@@ -17,6 +17,13 @@
 | `dspy-optimizer-selection` | Choosing among the optimizer families before compiling; a compile run is too slow or too expensive | `dspy-evaluation-harness` |
 | `dspy-retrieval` | RAG, embeddings, vector search, multi-hop; retrieval quality must be separable from answer quality | `dspy-evaluation-harness` |
 | `dspy-production` | Deploying a compiled artifact; cost, latency, tracing, streaming, async, batch | `dspy-evaluation-harness` |
+| `dspy-refrag` | Evaluating or vendoring REFRAG; fragment selection over near-duplicate passages | `dspy-retrieval` |
+| `dspy-rlm-hooks` | Instrumenting an RLM run, or overlapping tool latency with generation | `dspy-rlm-module` |
+| `dspy-drg-kg` | Turning documents into a typed, queryable knowledge graph | `dspy-retrieval` |
+| `dspy-tara-rag` | Self-corrective retrieval; scoring context on four dimensions | `dspy-retrieval`, `dspy-evaluation-harness` |
+| `dspy-tools-cli` | Managing DSPy programs from the shell rather than inline | `dspy-optimizer-selection` |
+| `dspy-context-engineering-book` | Finding a worked notebook before writing an implementation | — |
+
 | `dspy-advanced-workflow` | Full greenfield DSPy build and the self-optimizing loop | all others |
 
 Claude Code / Codex auto-select skills by matching the `description` field. You don't need to invoke them manually in most cases.
@@ -169,6 +176,24 @@ uv run python example_retrieval.py --dry-run
 
 cd ../dspy-production
 uv run python example_production.py --dry-run
+
+cd ../dspy-refrag
+uv run python example_refrag.py --dry-run
+
+cd ../dspy-rlm-hooks
+uv run python example_rlm_hooks.py --dry-run
+
+cd ../dspy-drg-kg
+uv run python example_drg_kg.py --dry-run
+
+cd ../dspy-tara-rag
+uv run python example_tara.py --dry-run
+
+cd ../dspy-tools-cli
+uv run python example_tools_cli.py --dry-run
+
+cd ../dspy-context-engineering-book
+uv run python example_book_map.py --dry-run
 
 cd ../dspy-advanced-workflow
 uv run python example_pipeline.py --dry-run

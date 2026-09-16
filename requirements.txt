@@ -1,0 +1,11 @@
+# Base requirements for running this pack's skill examples and validators.
+#
+# Every `skills/*/example_*.py --dry-run` runs with just these. Skills that
+# teach a third-party project declare their extra packages in
+# requirements-extras.txt, grouped by skill.
+#
+#     pip install -r requirements.txt
+#     uv run --with dspy python skills/<skill>/example_*.py --dry-run
+
+dspy>=3.2.1,<3.4
+pytest>=8.0
