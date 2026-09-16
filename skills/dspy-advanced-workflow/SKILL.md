@@ -1,6 +1,6 @@
 ---
 name: dspy-advanced-workflow
-description: Build DSPy 3.2.x programs through spec, program, metric and baseline; extend to optimization and export when requested and justified by task budget. Orchestrates the other ten DSPy skills (dspy-fundamentals, dspy-evaluation-harness, dspy-gepa-optimizer, dspy-rlm-module, dspy-rlm-workflow, dspy-deep-refine, dspy-reflect-loop, dspy-clarify, dspy-tetraframe, dspy-autodialectics) in the correct order. Use for greenfield DSPy builds; prototypes may stop at a validated baseline.
+description: Build DSPy 3.2.x programs through spec, program, metric and baseline; extend to optimization and export when requested and justified by task budget. Orchestrates the other thirteen DSPy skills (dspy-fundamentals, dspy-evaluation-harness, dspy-optimizer-selection, dspy-gepa-optimizer, dspy-retrieval, dspy-rlm-module, dspy-rlm-workflow, dspy-deep-refine, dspy-reflect-loop, dspy-clarify, dspy-tetraframe, dspy-autodialectics, dspy-production) in the correct order. Use for greenfield DSPy builds; prototypes may stop at a validated baseline.
 when_to_use: User wants to build, optimize, and ship a new DSPy pipeline; says "full workflow" / "end to end" / "from scratch"; or needs the standard loop applied to a greenfield task.
 ---
 
@@ -23,6 +23,9 @@ Rephrase the user's task in one sentence. Identify inputs, outputs, the quality 
 | Context-heavy, multi-step, must be verified | decompose/solve/synthesize/verify → `dspy-rlm-workflow` |
 | Retrieval base keeps failing the question | refine the base → `dspy-deep-refine` |
 | Users keep correcting the program | corrections → gold + feedback → `dspy-reflect-loop` |
+| The program must answer from documents | corpus, embeddings, multi-hop → `dspy-retrieval` |
+| Unsure which optimizer to compile with | baseline, then the cheapest that fits → `dspy-optimizer-selection` |
+| The artifact has to leave the notebook | cache, save format, tracing, streaming → `dspy-production` |
 | Content moves into an authoritative store, or a statement is vague | clarify gate → `dspy-clarify` |
 | A contested or hard-to-reverse decision (merge/supersede a page, resolve a conflict, pick a design) | four-corner assessment → `dspy-tetraframe` |
 | Output drifts, fakes completion or self-certifies | contract + dialectic + independent verify + slop gate → `dspy-autodialectics` |
@@ -50,7 +53,10 @@ baseline = evaluator(program)
 print("Baseline:", baseline.score)
 ```
 
-### 6. GEPA optimize
+### 6. Optimize
+
+GEPA is the default here because the metric above already returns feedback. When the metric is scalar-only, the trainset is small, or the compile budget is tight, pick the optimizer first with `dspy-optimizer-selection` — the baseline from step 5 is what makes that choice measurable.
+
 
 ```python
 reflection_lm = dspy.LM("openai/gpt-5", temperature=1.0, max_tokens=32000)
@@ -86,6 +92,7 @@ Deploy:
 - Wrap in FastAPI/CLI.
 - Enable `track_usage=True` for cost/latency observability.
 - Log with MLflow (`mlflow.dspy.autolog()`) or W&B in CI.
+- Harden the runtime before real traffic — cache, save format, async, streaming, callbacks: `dspy-production`.
 - Keep an offline regression test that runs the `evaluator` against the saved program and fails CI below a threshold.
 
 ## Full orchestration template

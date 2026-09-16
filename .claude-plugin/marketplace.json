@@ -8,8 +8,8 @@
     {
       "name": "dspy-agent-skills",
       "source": "./",
-      "description": "Production-grade DSPy 3.2.x skills: fundamentals, evaluation, GEPA, BetterTogether, RLM, RLM workflow, DeepRefine, reflect loop, clarify gate, TetraFrame decision assessment, autodialectics anti-slop harness, and end-to-end self-optimizing workflow.",
-      "version": "0.6.0",
+      "description": "Production-grade DSPy 3.2.x skills: fundamentals, evaluation, GEPA, BetterTogether, RLM, RLM workflow, DeepRefine, reflect loop, clarify gate, TetraFrame decision assessment, autodialectics anti-slop harness, optimizer selection, retrieval, production deployment, and end-to-end self-optimizing workflow.",
+      "version": "0.7.0",
       "author": {
         "name": "Bryan Young",
         "email": "bryan@intertwinesys.com"
@@ -30,7 +30,11 @@
         "clarify",
         "tetraframe",
         "autodialectics",
-        "anti-slop"
+        "anti-slop",
+        "retrieval",
+        "rag",
+        "production",
+        "observability"
       ],
       "category": "llm-frameworks",
       "tags": [

@@ -2,7 +2,7 @@
 
 [![DSPy 3.2.x](https://img.shields.io/badge/DSPy-3.2.x-0A7B83)](https://dspy.ai/)
 
-**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of eleven agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
+**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of fourteen agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
 
 - ✅ Validated against DSPy 3.2.1 (the real API, not inferred from stale docs)
 - ✅ Single source of truth for both **Claude Code** and **Codex CLI**
@@ -26,7 +26,10 @@
 | [`dspy-clarify`](skills/dspy-clarify/SKILL.md) | Precision gate: explicit scope, bound terms, open questions instead of guesses — before promotion, decomposition or refinement |
 | [`dspy-tetraframe`](skills/dspy-tetraframe/SKILL.md) | Critical assessment of a contested decision: four isolated corners (P / not-P / both / neither), contradiction map, non-averaging P*, verification suite — before decisions that change authority |
 | [`dspy-autodialectics`](skills/dspy-autodialectics/SKILL.md) | Keeping a program honest: immutable contract, thesis → antithesis → synthesis, independent verification, 12-dimension slop metric, gate, champion/challenger with canaries |
-| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the other ten, including the self-optimizing loop |
+| [`dspy-optimizer-selection`](skills/dspy-optimizer-selection/SKILL.md) | Picking the cheapest optimizer that fits the data and metric — the whole family, baseline first, escalation on a measured plateau |
+| [`dspy-retrieval`](skills/dspy-retrieval/SKILL.md) | The retrieval half: Embedder, Embeddings, FAISS, persisted indexes, multi-hop, and scoring recall separately from answers |
+| [`dspy-production`](skills/dspy-production/SKILL.md) | Shipping and seeing: cache hardening, save formats, usage, async, streaming, callbacks, MLflow |
+| [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the other thirteen, including the self-optimizing loop |
 
 ## Install
 
@@ -140,7 +143,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v0.6.0** • Targets DSPy 3.2.x
+**v0.7.0** • Targets DSPy 3.2.x
 
 ## License
 
@@ -150,3 +153,16 @@ MIT — see [LICENSE](LICENSE).
 
 Draft contributors: Bryan Young ([@intertwine](https://github.com/intertwine)) with Grok (xAI).
 Validation, spec-alignment, and dual-agent packaging: Claude Opus 4.7, April 2026.
+
+### Upstream sources
+
+Several skills are ports or consolidations of prior work, each credited in its own `SKILL.md`:
+
+| Skills here | Ported from | License |
+|---|---|---|
+| `dspy-optimizer-selection`, `dspy-retrieval`, `dspy-production` | [OmidZamani/dspy-skills](https://github.com/OmidZamani/dspy-skills) | MIT |
+| `dspy-tetraframe` | `tetraframe-dspy` (Hmbown) | MIT |
+| `dspy-clarify` | `clarify` (Hmbown) | Apache 2.0 |
+| `dspy-autodialectics` | [autodialectics](https://github.com/Hmbown/autodialectics) | MIT |
+| `dspy-deep-refine` | DeepRefine (arXiv:2605.10488) | — |
+| `dspy-reflect-loop` | `claude-reflect-system` | — |

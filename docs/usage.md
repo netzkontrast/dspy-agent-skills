@@ -1,6 +1,6 @@
 # Usage Guide
 
-## The eleven skills at a glance
+## The fourteen skills at a glance
 
 | Skill | Invoke when | Depends on |
 |---|---|---|
@@ -14,6 +14,9 @@
 | `dspy-clarify` | A claim, task or query must be made precise before it changes authority (promotion, decomposition, refinement) | `dspy-evaluation-harness` |
 | `dspy-tetraframe` | A contested or hard-to-reverse decision must be assessed before it is recorded (wiki merge/supersede, promotion conflict, design/storyform choice) | `dspy-evaluation-harness`, `dspy-clarify` |
 | `dspy-autodialectics` | A program that drifts, fakes completion or self-certifies; anti-slop gate and GEPA slop metric; champion/challenger promotion | `dspy-evaluation-harness`, `dspy-gepa-optimizer` |
+| `dspy-optimizer-selection` | Choosing among the optimizer families before compiling; a compile run is too slow or too expensive | `dspy-evaluation-harness` |
+| `dspy-retrieval` | RAG, embeddings, vector search, multi-hop; retrieval quality must be separable from answer quality | `dspy-evaluation-harness` |
+| `dspy-production` | Deploying a compiled artifact; cost, latency, tracing, streaming, async, batch | `dspy-evaluation-harness` |
 | `dspy-advanced-workflow` | Full greenfield DSPy build and the self-optimizing loop | all others |
 
 Claude Code / Codex auto-select skills by matching the `description` field. You don't need to invoke them manually in most cases.
@@ -157,6 +160,15 @@ uv run python example_tetraframe.py --dry-run
 
 cd ../dspy-autodialectics
 uv run python example_autodialectics.py --dry-run
+
+cd ../dspy-optimizer-selection
+uv run python example_optimizer_selection.py --dry-run
+
+cd ../dspy-retrieval
+uv run python example_retrieval.py --dry-run
+
+cd ../dspy-production
+uv run python example_production.py --dry-run
 
 cd ../dspy-advanced-workflow
 uv run python example_pipeline.py --dry-run

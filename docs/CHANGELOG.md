@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.7.0 — 2026-09-16
+
+### Three new skills, consolidated from `OmidZamani/dspy-skills` (MIT)
+
+That pack ships 22 narrow skills; this release ports the parts the pack did not already cover, merged into three skills rather than transplanted one-to-one. Ten source skills map into these three; the rest overlapped `dspy-fundamentals`, `dspy-evaluation-harness` or `dspy-gepa-optimizer` and were left out rather than creating a second source of truth.
+
+- Added `dspy-optimizer-selection` — the whole optimizer family (LabeledFewShot, BootstrapFewShot, BootstrapFewShotWithRandomSearch, KNNFewShot, COPRO, MIPROv2, SIMBA, GEPA, BootstrapFinetune, Ensemble, BetterTogether) as a routing decision: measure a baseline, take the cheapest optimizer whose trainset-size and metric-shape requirements you meet, escalate only on a measured plateau. Absorbs the source pack's six per-optimizer skills. Documents three `compile` signatures that break the common pattern (`Ensemble.compile(programs)`, `KNNFewShot.compile(student, teacher)`, `SIMBA`'s seed on compile) and that `MIPROv2` validates its LMs in the constructor, like GEPA's `reflection_lm`.
+- Added `dspy-retrieval` — `dspy.Embedder`, `dspy.Embeddings` (FAISS above 20,000 passages), index persistence, single-hop and deduplicated multi-hop RAG, and the rule that makes RAG debuggable: score recall@k separately from answer accuracy, with a table mapping the four outcomes to the component at fault. Corrects the source pack's global `dspy.configure(rm=...)` + `dspy.Retrieve` pattern to an injected callable retriever, which is testable.
+- Added `dspy-production` — cache hardening (`configure_cache(restrict_pickle=True)`), state-JSON versus cloudpickle save formats and which is safe to accept, usage accounting, async `acall`/`aforward`, `streamify` with `StreamListener`, `dspy.Parallel`, plus the observability half: `inspect_history`, `GLOBAL_HISTORY`, the full `BaseCallback` hook list, MLflow autolog, and the sampling/buffering a callback needs to avoid becoming request latency.
+- `dspy-advanced-workflow` step 6 now routes through `dspy-optimizer-selection` instead of assuming GEPA, step 7 points at `dspy-production`, and the routing table gained rows for retrieval, optimizer choice and deployment.
+
+### Validation
+
+Every API claim in the three skills was read off the installed wheel with `inspect.signature` rather than copied from prose docs, and each example asserts those signatures so an upstream change fails the smoke test instead of a user's compile run.
+
+- `pytest tests/` -> 249 passed
+- 14 of the 15 `skills/*/example_*.py --dry-run` pass, including the three new ones. `skills/dspy-rlm-module/example_rlm.py` still fails in an environment that resolves DSPy 3.3.x, where `dspy.RLM` renamed `max_iterations` to `max_iters`. That failure predates this release and is untouched here: the pack targets the DSPy 3.2.x series, and retargeting the RLM surface is a separate decision.
+
 ## v0.6.0 — 2026-09-15
 
 ### New skill: `dspy-autodialectics`
