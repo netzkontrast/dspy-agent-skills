@@ -3,7 +3,7 @@
 Source: `claude-reflect-system` v1.3.0 (`reflect/scripts/extract_signals.py`,
 `semantic_detector.py`, `learning_ledger.py`, `scope_analyzer.py`,
 `promote_learning.py`, `meta_learning.py`, `present_review.py`,
-`references/signal-patterns.md`) mapped onto DSPy 3.2.1.
+`references/signal-patterns.md`) mapped onto DSPy 3.3.1.
 
 ## Signal taxonomy (from `signal-patterns.md`)
 

@@ -24,12 +24,35 @@ def build_rlm(sub_model: str | None = None):
     sub_lm = dspy.LM(sub_model) if sub_model else None
     return dspy.RLM(
         "context, query -> answer",
-        max_iterations=10,
+        max_iters=10,
         max_llm_calls=20,
         max_output_chars=10_000,
         sub_lm=sub_lm,
         verbose=False,
     )
+
+
+def assert_rlm_surface() -> None:
+    """Pin the dspy.RLM constructor names this skill teaches.
+
+    DSPy 3.3.0 renamed ``max_iterations`` to ``max_iters`` and replaced the
+    ``interpreter`` constructor argument with an ``interpreter_factory``,
+    moving a caller-owned ``interpreter`` to ``forward``. Asserting the names
+    here means a future rename fails the smoke test rather than a user's run.
+    """
+    import inspect
+
+    import dspy
+
+    init = inspect.signature(dspy.RLM.__init__).parameters
+    for name in ("signature", "max_iters", "max_llm_calls", "max_output_chars",
+                 "verbose", "tools", "sub_lm", "interpreter_factory"):
+        assert name in init, f"dspy.RLM.__init__ lost parameter {name!r}"
+    assert "max_iterations" not in init, (
+        "dspy.RLM re-introduced max_iterations; revisit this skill"
+    )
+    forward = inspect.signature(dspy.RLM.forward).parameters
+    assert "interpreter" in forward, "dspy.RLM.forward lost its interpreter argument"
 
 
 SAMPLE_CONTEXT = """\
@@ -58,6 +81,7 @@ def main() -> int:
     rlm = build_rlm(sub_model=args.sub_model)
     if args.dry_run:
         # Verify signature fields wire up correctly; no LM/Deno interaction.
+        assert_rlm_surface()
         sig_in = sorted(rlm.signature.input_fields.keys())
         sig_out = sorted(rlm.signature.output_fields.keys())
         print("OK: dspy.RLM(signature='context, query -> answer') constructed.")
@@ -65,7 +89,7 @@ def main() -> int:
         print(f"    outputs: {sig_out}")
         print(
             "    "
-            f"max_iterations={rlm.max_iterations} "
+            f"max_iters={rlm.max_iters} "
             f"max_llm_calls={rlm.max_llm_calls} "
             f"max_output_chars={rlm.max_output_chars}"
         )

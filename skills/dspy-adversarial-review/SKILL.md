@@ -19,7 +19,7 @@ when_to_use: >-
   model that wrote the output and must be replaced by an independent one.
 ---
 
-# DSPy Adversarial Review (3.2.x)
+# DSPy Adversarial Review (3.3.x)
 
 Four repos converge on one pattern: a second model reads what the first
 wrote and is only allowed to object. `synthadoc` runs an adversarial lint

@@ -1,5 +1,104 @@
 # Changelog
 
+## v0.11.0 — 2026-09-16
+
+### Retargeted to DSPy 3.3.1
+
+The pack validated against DSPy 3.2.1 while one example had been failing on the
+3.3.x line since it shipped. This release moves the whole pack to 3.3.1 — the
+current stable release — and closes the gap that let the drift sit unnoticed.
+
+**The two breaking changes, both in DSPy 3.3.0:**
+
+| 3.2.x | 3.3.x | Blast radius |
+|---|---|---|
+| `dspy.RLM(max_iterations=...)` | `max_iters=` | `TypeError` on construction |
+| `interpreter=<instance>` in the constructor | `interpreter_factory=<callable>`; the instance now goes to `forward` (positional-only) | `TypeError` on construction |
+
+The `interpreter` → `interpreter_factory` move hit `dspy.ProgramOfThought` and
+`dspy.CodeAct` in the same release, not just `RLM`, so the module tables in
+`dspy-fundamentals` were wrong for all three.
+
+**Why it went unnoticed, and what now prevents it.** `scripts/check_dspy_surface.py`
+asserted GEPA, BetterTogether, Evaluate, LM, SIMBA, Embedder, Refine and BestOfN —
+but never `dspy.RLM`. The only thing exercising the RLM surface was one example's
+dry run, and its failure was recorded as known rather than fixed. Three additions
+close that:
+
+- `scripts/check_dspy_surface.py` now pins the full `RLM` constructor, asserts
+  `max_iterations` is *absent*, checks `max_output_chars` still defaults to
+  `10_000`, and covers the `ProgramOfThought`/`CodeAct` interpreter move.
+- `example_rlm.py` asserts its own surface before using it, so an upstream
+  rename fails the smoke test instead of a user's run.
+- A new Rule 10 in `tests/test_skill_correctness.py` fails any teaching file
+  that uses the old constructor names as live guidance, while allowing lines
+  that document the migration.
+
+**A pre-existing doc error found while verifying.** The RLM reference cited
+`dspy.utils.PythonInterpreter` and `dspy.utils.CodeInterpreter`. Neither has ever
+resolved: `dspy/utils/__init__.py` exports no interpreter in 3.2.1 or 3.3.1. The
+working paths are `dspy.primitives.*` on both, plus a bare `dspy.PythonInterpreter`
+alias that is 3.3.x-only. The custom-interpreter contract was also understated —
+a `CodeInterpreter` subclass owes `start()`, `execute(code, variables=None)`,
+`shutdown()` and a mutable `tools` mapping, not just `execute(code) -> str`.
+
+**Re-verified rather than assumed.** Every behavioural claim the pack makes about
+its own guardrails was re-run on 3.3.1: dict and string metric returns still raise
+`TypeError: unsupported operand type(s) for +` inside `dspy.Evaluate`;
+`BetterTogether`'s default strategy is still `"p -> w -> p"`; `max_output_chars`
+still defaults to `10_000`; `warn_on_type_mismatch` still defaults to `True`.
+
+### Version floor raised
+
+`requirements.txt` moves from `dspy>=3.2.1,<3.4` to `dspy>=3.3.0,<3.4`. The floor
+is a real constraint, not housekeeping — `dspy-rlm-module` cannot run on 3.2.x
+now that it teaches `max_iters`. DSPy `3.4.0b1` exists on PyPI but is a
+pre-release and is not a target.
+
+### Kohärenz Protokoll version contract
+
+`docs/kohaerenz-protokoll-plugin-plan.md` said whichever side moved first owed
+the other a notice. This pack moved first, so the notice is now in the plan,
+along with the check behind it: `tools/kpwiki/` uses twelve DSPy symbols and not
+one of them changed between 3.2.1 and 3.3.1, and it has no `RLM`,
+`ProgramOfThought`, `CodeAct` or `dspy.Image` call site. KP can move its pin to
+`3.3.1` without editing a program. Nothing in the KP repo was changed from here —
+that pin is KP's to set.
+
+### Historical artifacts untouched
+
+`examples/*/version_comparison.{json,md}` still record the DSPy `3.1.3` and
+`3.2.0` runs that produced them. They are measurements, not claims about the
+current API, and rewriting their labels would have made them lie.
+
+### Six open plan questions answered
+
+Both integration plans ended in questions for the author. All six are answered
+and recorded in the plans as decisions, with what each one changes:
+
+| # | Decision | What it changes |
+|---|---|---|
+| D1 | Canon index covers `Canon/` + graph only, not `Manuscript/` | A draft's own error can never be retrieved as the canon a later draft is checked against |
+| D2 | The codex `kind` enum grows in the engine | `rule`, `motif`, `theme`, `voice`, `character` become real members; the `**Kategorie:**` body line becomes a migration bridge, not the destination |
+| D3 | Three LM roles — extractor, judge, reflection | No new configuration: KP's `lm.py` already defines `worker`/`task`/`reflection` with exactly this separation |
+| D4 | Learnings are written in English | Quoted canon still keeps its source language, as `language_kept` already enforces for claims |
+| D5 | Gate suppression is visible, never silent | A suppressed finding is reported with the learning id that suppressed it, so suppression precision stays measurable |
+| D6 | `MEMORY.md` stays hand-written | The learnings layer imports from agent memory and never writes back; no existing file becomes generated |
+
+D2 is the largest and is now called out as its own step: the `kind` enum
+belongs to the agency engine, so KP cannot widen it unilaterally, and the ~600
+existing entries need an idempotent migration off their `**Kategorie:**` line
+while `render_codex_views.py` reads both shapes.
+
+### Validation
+
+- `633 passed` (up from 525; the new Rule 10 is parametrized over every teaching file).
+- All **33** `skills/*/example_*.py --dry-run` pass on DSPy 3.3.1. This is the
+  first release in which that count has no exceptions.
+- `scripts/check_dspy_surface.py` passes against 3.3.1 with the new assertions.
+- The Rule 10 guard was verified by reintroducing the `max_iterations` rename:
+  it fails, and passes again once reverted.
+
 ## v0.10.0 — 2026-09-16
 
 Merge of two parallel skill lines. Both added skills to the same pack; this release is their union, and the version supersedes the `0.7.0` each claimed independently.

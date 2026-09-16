@@ -3,7 +3,7 @@
 Sources: DeepRefine (HKUST-KnowComp, arXiv:2605.10488) and its agent adapter
 `DeepRefine-Skill` v0.2.0 (`agent_prompts.py`, `action_review.py`,
 `agent_loop.py::validate_trace`, `references/deeprefine-workflow.md`),
-mapped onto DSPy 3.2.1.
+mapped onto DSPy 3.3.1.
 
 ## Constants (from DeepRefine)
 

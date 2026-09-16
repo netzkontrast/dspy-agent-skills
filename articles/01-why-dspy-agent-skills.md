@@ -41,7 +41,7 @@ The catch: GEPA only works if your metric can explain *why* something failed. A 
 
 Alex Zhang's [origin blog post](https://alexzhang13.github.io/blog/2025/rlm/) frames it well. RLMs separate *variable space* (what's in the REPL's memory) from *token space* (what the LM actually sees), and that separation is the real lever for fighting what the field has started calling context rot.
 
-![alt: diagram showing three DSPy 3.2.x building blocks — typed Signature feeding GEPA for optimization and RLM for long context — forming a pipeline into an optimized saved program](placeholder-pipeline-diagram.png)
+![alt: diagram showing three DSPy 3.3.x building blocks — typed Signature feeding GEPA for optimization and RLM for long context — forming a pipeline into an optimized saved program](placeholder-pipeline-diagram.png)
 <!-- IMAGE PROMPT (Nano Banana): "A clean technical diagram showing three labeled building blocks connecting left to right: 1) a document icon labeled 'typed Signature + dspy.Module' 2) a circular arrow labeled 'GEPA reflective optimizer' containing smaller icons of a mutation and a Pareto frontier curve 3) a nested REPL window labeled 'RLM long-context reasoning'. Arrows flow between them into a final box labeled 'optimized_program.json'. Editorial tech-magazine style, monochrome line art on off-white paper background, subtle blue accent for arrows, annotation labels in a clean mono typeface. 16:9." -->
 
 ## Why a skill pack specifically

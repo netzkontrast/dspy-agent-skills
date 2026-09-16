@@ -1,6 +1,6 @@
 # DSPy Advanced Workflow — Reference
 
-Source: orchestration pattern built on https://dspy.ai/ (DSPy 3.2.1 surface verified May 2026).
+Source: orchestration pattern built on https://dspy.ai/ (DSPy 3.3.1 surface verified September 2026).
 
 ## `dspy.configure`
 

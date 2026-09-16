@@ -3,8 +3,8 @@
 
 Run with an explicit DSPy wheel, for example:
 
-    env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 \
-        python scripts/check_dspy_surface.py --expected-version 3.2.1
+    env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 \
+        python scripts/check_dspy_surface.py --expected-version 3.3.1
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ class _EchoModule:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--expected-version", default="3.2.1")
+    parser.add_argument("--expected-version", default="3.3.1")
     args = parser.parse_args()
 
     import dspy
@@ -126,6 +126,50 @@ def main() -> int:
 
     for name in ("Reasoning", "File", "Code"):
         _require(hasattr(dspy, name), f"dspy.{name} is missing")
+
+    # dspy.RLM is upstream-Experimental and renamed twice in 3.3.0: the pack
+    # teaches these exact names, so pin them here rather than in one example.
+    _assert_params(
+        "dspy.RLM.__init__",
+        dspy.RLM.__init__,
+        {
+            "signature",
+            "max_iters",
+            "max_llm_calls",
+            "max_output_chars",
+            "verbose",
+            "tools",
+            "sub_lm",
+            "interpreter_factory",
+        },
+    )
+    _require(
+        "max_iterations" not in _params(dspy.RLM.__init__),
+        "dspy.RLM re-introduced max_iterations; the 3.3.x rename may have been reverted",
+    )
+    _require(
+        _params(dspy.RLM.__init__)["max_output_chars"].default == 10_000,
+        "dspy.RLM max_output_chars default changed",
+    )
+    _require(
+        "interpreter" in _params(dspy.RLM.forward),
+        "dspy.RLM.forward lost its caller-owned interpreter argument",
+    )
+
+    # ProgramOfThought and CodeAct took the same interpreter -> interpreter_factory
+    # move in 3.3.0; the module tables in dspy-fundamentals quote both.
+    for name in ("ProgramOfThought", "CodeAct"):
+        cls = getattr(dspy, name)
+        _assert_params(f"dspy.{name}.__init__", cls.__init__, {"signature", "max_iters", "interpreter_factory"})
+        _require(
+            "interpreter" in _params(cls.forward),
+            f"dspy.{name}.forward lost its caller-owned interpreter argument",
+        )
+
+    # dspy.PythonInterpreter is the 3.3.x top-level alias the RLM reference cites.
+    for name in ("PythonInterpreter",):
+        _require(hasattr(dspy, name), f"dspy.{name} is missing")
+
 
     def gepa_metric(gold, pred, trace=None, pred_name=None, pred_trace=None):
         return dspy.Prediction(score=1.0, feedback=f"ok for {pred_name or 'program'}")

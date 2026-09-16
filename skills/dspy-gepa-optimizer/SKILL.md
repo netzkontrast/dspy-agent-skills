@@ -4,7 +4,7 @@ description: Optimize DSPy programs with dspy.GEPA — a reflective/evolutionary
 when_to_use: User asks to optimize/compile/tune a DSPy program, mentions GEPA or reflective optimization, or has a working program with a non-trivial metric and wants to improve it.
 ---
 
-# DSPy GEPA Optimizer (3.2.x)
+# DSPy GEPA Optimizer (3.3.x)
 
 GEPA (Genetic-Pareto) is a reflective optimizer: it mutates a program's instructions and few-shots using an LM that reads your metric's **textual feedback** and proposes improvements. It maintains a Pareto frontier across validation tasks and is the default recommendation for complex DSPy workloads in 2026.
 
@@ -13,7 +13,7 @@ GEPA (Genetic-Pareto) is a reflective optimizer: it mutates a program's instruct
 ## Prerequisites — do these first or GEPA wastes rollouts
 
 1. A `dspy.Module` that runs end-to-end (see `dspy-fundamentals`).
-2. A rich-feedback metric returning `dspy.Prediction(score=float, feedback=str)` (see `dspy-evaluation-harness`). Informative feedback can support reflection; evaluate optimizer benefit on the task rather than assuming superiority. A dict with the same fields still crashes `dspy.Evaluate` under DSPy 3.2.1 — use `dspy.Prediction`.
+2. A rich-feedback metric returning `dspy.Prediction(score=float, feedback=str)` (see `dspy-evaluation-harness`). Informative feedback can support reflection; evaluate optimizer benefit on the task rather than assuming superiority. A dict with the same fields still crashes `dspy.Evaluate` under DSPy 3.3.1 — use `dspy.Prediction`.
 3. `trainset` and a **separate** `valset`. For GEPA, maximize training examples and keep validation just large enough to represent the downstream distribution; do not reuse the same examples for both.
 4. A `reflection_lm` — a strong LM (often the same or stronger than the task LM) set to `temperature=1.0` for creative proposals. Current DSPy docs use a GPT-5-class reflection model with a large output budget.
 
@@ -75,7 +75,7 @@ def rich_metric(gold, pred, trace=None, pred_name=None, pred_trace=None):
     return dspy.Prediction(score=score, feedback=feedback)
 ```
 
-**Return `dspy.Prediction`, not a dict.** Some upstream GEPA prose describes score/feedback as a dict-like shape, but `dspy.Evaluate` in DSPy 3.2.1 still crashes on a literal dict metric (`TypeError: unsupported operand type(s) for +: 'int' and 'dict'`). GEPA uses `dspy.Evaluate` internally for candidate scoring, so a dict return can fail inside GEPA too, not just in your explicit `Evaluate(...)` calls.
+**Return `dspy.Prediction`, not a dict.** Some upstream GEPA prose describes score/feedback as a dict-like shape, but `dspy.Evaluate` in DSPy 3.3.1 still crashes on a literal dict metric (`TypeError: unsupported operand type(s) for +: 'int' and 'dict'`). GEPA uses `dspy.Evaluate` internally for candidate scoring, so a dict return can fail inside GEPA too, not just in your explicit `Evaluate(...)` calls.
 
 - `pred_name` / `pred_trace` are set during reflection on a specific predictor inside your module — write per-predictor feedback when possible (credit assignment). If you cannot localize feedback, return program-level feedback rather than a vague score-only critique.
 - Feedback quality is the load-bearing part: specifics about *why* it failed and *what good looks like* are what the reflection LM acts on.
@@ -94,7 +94,7 @@ Use **either** `auto=...` **or** explicit budget — not both.
 
 Each "full eval" ≈ `len(valset)` metric calls. Budget accordingly for cost.
 
-## Constructor parameters (every one, DSPy 3.2.x)
+## Constructor parameters (every one, DSPy 3.3.x)
 
 ```python
 dspy.GEPA(
@@ -133,9 +133,9 @@ dspy.GEPA(
 
 DSPy's general prompt-optimizer docs often recommend a validation-heavy split, such as 20% train / 80% validation, because small prompt optimizers can overfit tiny trainsets. GEPA is different: maximize the training set and reserve only enough validation examples to represent downstream behavior. The Pareto frontier still needs a real valset, but GEPA learns from traces and textual feedback on training examples, so starving trainset hurts.
 
-## BetterTogether in DSPy 3.2.x
+## BetterTogether in DSPy 3.3.x
 
-If you want a multi-stage optimizer loop, DSPy 3.2.0's `BetterTogether` now accepts arbitrary named optimizers instead of the older fixed `prompt_optimizer` / `weight_optimizer` pair:
+If you want a multi-stage optimizer loop, `BetterTogether` accepts arbitrary named optimizers instead of the older fixed `prompt_optimizer` / `weight_optimizer` pair (changed in 3.2.0, unchanged through 3.3.1):
 
 ```python
 optimizer = dspy.BetterTogether(
@@ -152,7 +152,7 @@ optimized = optimizer.compile(
 )
 ```
 
-Pass `strategy=` explicitly when you use named stages like `bootstrap=...` and `gepa=...`. DSPy 3.2.0's default strategy is still `"p -> w -> p"`, which only works if your optimizer keys are literally `p` and `w`.
+Pass `strategy=` explicitly when you use named stages like `bootstrap=...` and `gepa=...`. The default strategy is still `"p -> w -> p"` on 3.3.1, which only works if your optimizer keys are literally `p` and `w`.
 
 Keep plain GEPA as the default first pass. Reach for `BetterTogether` only when you have a specific reason to chain optimizers and want the valset to pick the best intermediate program.
 

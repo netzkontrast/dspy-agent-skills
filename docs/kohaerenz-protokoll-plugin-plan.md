@@ -67,10 +67,25 @@ Skills KP's CLAUDE.md should name, beyond the five it already lists:
 | `dspy-autodialectics` | gate for generated canon; complements `lit_critic_gate.py` |
 | `dspy-clarify` | the promotion boundary Wiki → Canon, where a D-xx decision is required |
 
-**The version contract is the load-bearing part.** KP pins `dspy==3.2.1`. This
-pack validates against the 3.2.x series. Whoever moves first must tell the
-other, because KP's closed enums and this pack's asserted signatures both break
-silently on a DSPy minor bump.
+**The version contract is the load-bearing part.** KP pins `dspy==3.2.1`
+(`requirements-dspy.txt`, commented "Pinned to the DSPy release the
+dspy-agent-skills pack is validated against"). That comment is now stale:
+**this pack moved first.** It validates against 3.3.1 and its floor is
+`dspy>=3.3.0`, because DSPy 3.3.0 renamed `dspy.RLM`'s `max_iterations` to
+`max_iters` and swapped `interpreter=` for `interpreter_factory=`.
+
+The bump is safe on KP's side, and that is a checked claim rather than an
+assumption. `tools/kpwiki/` uses exactly twelve DSPy symbols — `ChainOfThought`,
+`Evaluate`, `Example`, `InputField`, `LM`, `Module`, `OutputField`, `Predict`,
+`Prediction`, `Signature`, `configure`, `context` — and none of them changed
+between 3.2.1 and 3.3.1. KP touches no RLM, `ProgramOfThought`, `CodeAct` or
+`dspy.Image` call site, which is where every breaking rename landed. So KP can
+move its pin to `dspy==3.3.1` and re-run `scripts/setup_dspy.sh --check`
+without editing a program.
+
+That pin is KP's to change, not this pack's, so nothing in the KP repo was
+touched here. What this section now owes KP is the notice the contract asks
+for, and this is it.
 
 ## Part 2 — Port verdicts, per upstream
 
@@ -202,7 +217,7 @@ Each step is independently valuable and independently revertible.
 | 3 | Build the canon index and fill `CanonRetriever` | recall@k on a known-location devset | 4, 5 |
 | 4 | Add the 4D context score to the conflict check | conflicts found on a seeded contradiction; sufficiency routes to OpenQuestion | — |
 | 5 | Optimize `SourceIngest` against `ingest_metric` | compiled beats baseline on a held-out set | — |
-| 6 | DRG schema for the codex, proposal-only | proposed entities validate against the closed `kind` enum | — |
+| 6 | DRG schema for the codex, proposal-only | proposed entities validate against the `kind` enum in force (see D2) | — |
 | 7 | RLM hooks, if and when an RLM step exists | fence violation stops the run | — |
 
 Step 3 is where the real gain is. Steps 1 and 2 exist to make it safe.
@@ -210,6 +225,7 @@ Step 3 is where the real gain is. Steps 1 and 2 exist to make it safe.
 ## Part 5 — What not to do
 
 - Do not let any of this write to `Canon/` or the provenance graph without a D-xx decision. These tools propose.
+- Do not widen the codex `kind` enum from inside KP. D2 approves the change, but the enum is the agency engine's; KP keeps the `**Kategorie:**` bridge until the engine ships it.
 - Do not adopt `dspy-refrag` as a package for context compression; measure first and you will find nothing to measure.
 - Do not copy TARA source while its license file is missing.
 - Do not introduce FalkorDB, Redis or a second skill graph alongside the agency engine.
@@ -217,8 +233,68 @@ Step 3 is where the real gain is. Steps 1 and 2 exist to make it safe.
 - Do not translate canon prose. These are English engineering tools operating on German canon; claims quote the source language, which `metrics.py` already enforces with `language_kept`.
 - Do not skip the recall measurement in step 3. An unmeasured retriever that returns plausible passages will make the conflict check look like it is working.
 
-## Open questions for the author
+## Author decisions
 
-1. Should the canon index cover `Manuscript/` chapters as well as `Canon/` and `Codex/`? Retrieving draft prose into a canon-conflict check may be a feature or a contamination.
-2. Is the codex `kind` enum permitted to grow for DRG extraction, or must proposals map onto the existing five with `**Kategorie:**` as the body's first line, as the current ingest rules require?
-3. Which LM roles should the ingest loop use? KP's `lm.py` already separates task, worker and reflection; the plan assumes that split holds.
+The three questions this plan opened are answered. They are recorded here
+because each one changes what gets built, not just how it is described.
+
+### D1 — The canon index covers `Canon/` and the graph only
+
+`Manuscript/` prose stays out of the index. The conflict check fires against
+author-locked truth exclusively: `Canon/*.md`, WorldAxioms, CodexEntries.
+
+The reason to want draft prose in the index is real — it would catch
+continuity drift no codex entry records. It loses to a worse failure. A
+chapter that is drafted but not revised is not yet true, and indexing it
+makes the retriever able to return a draft's own error as the canon a later
+draft is checked against. The error then reads as confirmed. Keeping the
+index author-locked means a retrieved passage is always something a D-xx
+decision put there.
+
+Consequence for step 3: the recall@k devset is built from `Canon/` and codex
+locations only, so it can be scored without any chapter reaching `revised`.
+
+### D2 — The codex `kind` enum grows in the engine
+
+Proposals no longer have to squeeze into
+`{concept, location, faction, artefact, minor-character}` with the real
+category demoted to a `**Kategorie:**` body line. `rule`, `motif`, `theme`,
+`voice` and `character` become real enum members, and DRG extraction targets
+them directly.
+
+This is an engine-ontology change and it is the largest item in this plan, so
+treat it as its own step rather than a detail of step 6:
+
+- It is an **agency engine** change, not a KP change. The `kind` enum is
+  enforced by the capability, so KP cannot widen it unilaterally.
+- The ~600 existing entries carry their true category in the body's first
+  line. Migration is mechanical — read `**Kategorie:**`, set `kind`, drop the
+  line — but it must be idempotent against graph ground truth, per the
+  partial-block persistence gotcha, not against a ledger of what was done.
+- Until the engine ships the wider enum, DRG proposals keep using the body
+  line. The workaround is the bridge, not the destination.
+- Anything that parses the `**Kategorie:**` convention — including
+  `scripts/render_codex_views.py` — has to read the field after migration and
+  the body line before it, so it must handle both while the migration is in
+  flight.
+
+### D3 — Three LM roles, and KP already has them
+
+The ingest loop uses a cheap extractor, a strong independent judge, and a
+separate reflection model for GEPA. No new configuration is needed:
+`tools/kpwiki/lm.py` already defines exactly this split, overridable per role
+through the environment.
+
+| Plan role | KP role in `lm.py` | Default | Temperature |
+|---|---|---|---|
+| extractor | `worker` | `anthropic/claude-haiku-4-5` | 0.0 |
+| judge | `task` | `anthropic/claude-opus-5` | 0.0 |
+| reflection | `reflection` | `anthropic/claude-opus-5` | 1.0 |
+
+The separation is the point, not the model choice. The judge must not be the
+model that produced the extraction it is judging, and GEPA's reflection model
+must not be the judge it is optimising against — otherwise optimisation moves
+the program toward the judge's own errors, which is the failure
+`dspy-book-metrics` documents from chapter 5. The chapter 6 finding applies to
+the extractor slot specifically: the expensive model is not reliably the
+better one, so `worker` is the slot to measure before paying to upgrade.

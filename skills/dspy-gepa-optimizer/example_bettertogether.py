@@ -1,6 +1,7 @@
-"""DSPy 3.2.x BetterTogether chaining demo.
+"""DSPy 3.3.x BetterTogether chaining demo.
 
-This example showcases DSPy 3.2.0's generalized BetterTogether API, where
+This example showcases the generalized BetterTogether API (introduced in
+DSPy 3.2.0, unchanged in 3.3.x), where
 named optimizers are passed as keyword arguments and chained via a strategy
 string. The --dry-run path constructs the whole setup without calling an LM.
 

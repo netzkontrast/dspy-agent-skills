@@ -7,7 +7,7 @@ when_to_use: >-
   ; consider feedback quality alongside data, budget and program errors.
 ---
 
-# DSPy Evaluation Harness (3.2.x)
+# DSPy Evaluation Harness (3.3.x)
 
 The metric is usually more important than the program. For `dspy.GEPA` especially, the quality of **textual feedback** in your metric determines whether optimization converges.
 

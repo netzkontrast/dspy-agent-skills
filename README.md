@@ -1,14 +1,14 @@
 # DSPy Agent Skills
 
-[![DSPy 3.2.x](https://img.shields.io/badge/DSPy-3.2.x-0A7B83)](https://dspy.ai/)
+[![DSPy 3.3.x](https://img.shields.io/badge/DSPy-3.3.x-0A7B83)](https://dspy.ai/)
 
-**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of thirty-two agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
+**Production-grade DSPy 3.3.x skills for coding agents.** A synthesized, spec-compliant pack of thirty-two agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
 
-- ✅ Validated against DSPy 3.2.1 (the real API, not inferred from stale docs)
+- ✅ Validated against DSPy 3.3.1 (the real API, not inferred from stale docs)
 - ✅ Single source of truth for both **Claude Code** and **Codex CLI**
 - ✅ Progressive disclosure (short `SKILL.md` + deep `reference.md`)
 - ✅ Runnable `example_*.py` scripts with offline `--dry-run`
-- ✅ Includes a DSPy 3.2.x `BetterTogether` chaining example
+- ✅ Includes a DSPy 3.3.x `BetterTogether` chaining example
 - ✅ Plugin manifest + marketplace manifest for one-click install
 - ✅ Validation tests for frontmatter spec, JSON schema, Python AST, skill-doc correctness, and version alignment
 
@@ -105,7 +105,7 @@ The refreshed `01` and `02` artifacts use the paid pair `openrouter/mistralai/mi
 
 Every API claim is grounded in:
 
-- https://dspy.ai/ (official docs, DSPy 3.2.x)
+- https://dspy.ai/ (official docs, DSPy 3.3.x)
 - https://code.claude.com/docs/en/skills.md (Claude Code skill spec)
 - https://developers.openai.com/codex/skills (Codex skill spec)
 
@@ -119,22 +119,22 @@ uv run --with pytest python -m pytest tests/ -v
 for f in skills/*/example_*.py; do uv run --with dspy python "$f" --dry-run; done
 
 # Validate the current DSPy API surface used by these skills
-env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python scripts/check_dspy_surface.py
+env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 python scripts/check_dspy_surface.py
 
 # Live GEPA run (requires OPENAI_API_KEY)
 cd skills/dspy-advanced-workflow
 OPENAI_API_KEY=... uv run --with dspy python example_pipeline.py --auto light
 ```
 
-If `uv run --with dspy` resolves an older DSPy release instead of the current `3.2.1` wheel, check whether `UV_EXCLUDE_NEWER` or a stale package mirror is hiding the new release. The exact 3.2.1 override we validated for this repo is:
+If `uv run --with dspy` resolves an older DSPy release instead of the current `3.3.1` wheel, check whether `UV_EXCLUDE_NEWER` or a stale package mirror is hiding the new release. The exact 3.3.1 override we validated for this repo is:
 
 ```bash
-env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python -c 'import dspy; print(dspy.__version__)'
+env -u UV_EXCLUDE_NEWER uv run --with dspy==3.3.1 python -c 'import dspy; print(dspy.__version__)'
 ```
 
 ## Compatibility
 
-- **DSPy**: 3.2.x (tested against 3.2.1; committed example artifacts remain explicitly labeled by the DSPy version that produced them)
+- **DSPy**: 3.3.x (tested against 3.3.1; committed example artifacts remain explicitly labeled by the DSPy version that produced them)
 - **Claude Code**: current (skill spec as of 2026-04-17)
 - **Codex CLI**: current Agent Skills format
 - **Python**: 3.10+
@@ -145,23 +145,45 @@ env -u UV_EXCLUDE_NEWER uv run --with dspy==3.2.1 python -c 'import dspy; print(
 ```
 dspy-agent-skills/
 ├── .claude-plugin/
-│   ├── plugin.json
-│   └── marketplace.json
-├── skills/
-│   ├── dspy-fundamentals/{SKILL.md, reference.md, example_qa.py}
-│   ├── dspy-evaluation-harness/{SKILL.md, reference.md, example_metric.py}
-│   ├── dspy-gepa-optimizer/{SKILL.md, reference.md, example_gepa.py}
-│   ├── dspy-rlm-module/{SKILL.md, reference.md, example_rlm.py}
-│   └── dspy-advanced-workflow/{SKILL.md, reference.md, example_pipeline.py}
-├── scripts/install.sh           # dual-target installer
-├── tests/                       # spec validators
-├── docs/{installation,usage,CHANGELOG}.md
-├── README.md  LICENSE  .gitignore
+│   ├── plugin.json              # version, description, skill metadata
+│   └── marketplace.json         # one-click install manifest
+├── skills/                      # the product — 32 skills, listed above
+│   └── <skill-name>/
+│       ├── SKILL.md             # required; frontmatter is spec-validated
+│       ├── reference.md         # deep API detail (progressive disclosure)
+│       └── example_*.py         # runnable smoke test with --dry-run
+├── examples/                    # end-to-end demos against real LMs
+│   ├── 01-rag-qa/  02-math-reasoning/  03-invoice-extraction/
+│   │                            # each with data/, version_comparison.{json,md}
+│   └── common/                  # shared runner helpers
+├── scaffolding/                 # inert reference implementations, not imported
+│   └── kp_canon_retriever.py    # the CanonRetriever seam (see docs/ plans)
+├── scripts/
+│   ├── install.sh               # dual-target installer (Claude Code + Codex)
+│   └── check_dspy_surface.py    # asserts the live DSPy API this pack teaches
+├── tests/                       # spec + doc-correctness validators
+│   ├── test_skill_metadata.py   #   frontmatter against the agentskills.io spec
+│   ├── test_manifests.py        #   JSON schema and version alignment
+│   ├── test_examples_parse.py   #   every example and scaffold parses
+│   └── test_skill_correctness.py#   ten regression rules over teaching files
+├── docs/
+│   ├── installation.md  usage.md  CHANGELOG.md
+│   ├── kohaerenz-protokoll-plugin-plan.md
+│   └── compounding-wiki-extension-plan.md
+├── articles/                    # long-form write-ups
+├── requirements.txt             # dspy>=3.3.0,<3.4 + pytest
+├── requirements-extras.txt      # per-skill third-party packages
+└── AGENTS.md  CLAUDE.md  README.md  LICENSE
 ```
+
+`skills/` is the only directory an installed plugin exposes. Everything else is
+for contributors: `examples/` and `articles/` are documentation, `scaffolding/`
+is reference code that nothing imports, and `tests/` is what keeps the skills
+honest.
 
 ## Version
 
-**v0.10.0** • Targets DSPy 3.2.x
+**v0.11.0** • Targets DSPy 3.3.x
 
 ## License
 

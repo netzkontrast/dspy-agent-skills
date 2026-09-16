@@ -29,7 +29,7 @@ class RepoAuditor(dspy.Module):
         super().__init__()
         self.explore = dspy.RLM(
             "repo_tree, question -> findings",
-            max_iterations=30,
+            max_iters=30,
             sub_lm=dspy.LM("openai/gpt-4o-mini"),  # cheap inner model
         )
         self.synthesize = dspy.ChainOfThought(

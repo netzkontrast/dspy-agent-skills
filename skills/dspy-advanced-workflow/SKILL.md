@@ -1,6 +1,6 @@
 ---
 name: dspy-advanced-workflow
-description: Build DSPy 3.2.x programs through spec, program, metric and baseline; extend to optimization and export when requested and justified by task budget. Orchestrates the other 31 DSPy skills (dspy-adversarial-review, dspy-autodialectics, dspy-book-agents, dspy-book-coding-agents, dspy-book-datasets, dspy-book-eight-steps, dspy-book-metrics, dspy-book-modules, dspy-book-optimizers, dspy-book-production, dspy-book-use-cases, dspy-clarify, dspy-context-engineering-book, dspy-deep-refine, dspy-drg-kg, dspy-evaluation-harness, dspy-fundamentals, dspy-gepa-optimizer, dspy-local-runtime, dspy-optimizer-selection, dspy-production, dspy-reflect-loop, dspy-refrag, dspy-retrieval, dspy-rlm-hooks, dspy-rlm-module, dspy-rlm-workflow, dspy-tara-rag, dspy-tetraframe, dspy-tools-cli, dspy-wiki-compile) in the correct order. Use for greenfield DSPy builds; prototypes may stop at a validated baseline.
+description: Build DSPy 3.3.x programs through spec, program, metric and baseline; extend to optimization and export when requested and justified by task budget. Orchestrates the other 31 DSPy skills (dspy-adversarial-review, dspy-autodialectics, dspy-book-agents, dspy-book-coding-agents, dspy-book-datasets, dspy-book-eight-steps, dspy-book-metrics, dspy-book-modules, dspy-book-optimizers, dspy-book-production, dspy-book-use-cases, dspy-clarify, dspy-context-engineering-book, dspy-deep-refine, dspy-drg-kg, dspy-evaluation-harness, dspy-fundamentals, dspy-gepa-optimizer, dspy-local-runtime, dspy-optimizer-selection, dspy-production, dspy-reflect-loop, dspy-refrag, dspy-retrieval, dspy-rlm-hooks, dspy-rlm-module, dspy-rlm-workflow, dspy-tara-rag, dspy-tetraframe, dspy-tools-cli, dspy-wiki-compile) in the correct order. Use for greenfield DSPy builds; prototypes may stop at a validated baseline.
 when_to_use: User wants to build, optimize, and ship a new DSPy pipeline; says "full workflow" / "end to end" / "from scratch"; or needs the standard loop applied to a greenfield task.
 ---
 
@@ -80,7 +80,7 @@ print("Optimized:", evaluator(optimized).score)
 
 Run `auto="light"` first as a sanity check; move to `auto="medium"`/`"heavy"` for the final run. See `dspy-gepa-optimizer`.
 
-If you need a deliberate multi-stage compile loop, DSPy 3.2.x also exposes `dspy.BetterTogether(metric=..., bootstrap=..., gepa=...)` for chaining named optimizers after you have a clean baseline GEPA setup.
+If you need a deliberate multi-stage compile loop, DSPy 3.3.x also exposes `dspy.BetterTogether(metric=..., bootstrap=..., gepa=...)` for chaining named optimizers after you have a clean baseline GEPA setup.
 
 ### 7. Export & deploy
 

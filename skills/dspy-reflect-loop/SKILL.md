@@ -8,7 +8,7 @@ when_to_use: >-
   from feedback; when building the human-feedback source of a self-optimizing loop.
 ---
 
-# DSPy Reflect Loop (3.2.x)
+# DSPy Reflect Loop (3.3.x)
 
 Port of `claude-reflect-system` (Reflect v1.3, "correct once, never again":
 signal extraction → review → safe skill update → git commit, plus a

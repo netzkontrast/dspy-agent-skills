@@ -19,7 +19,7 @@ when_to_use: >-
   a reusable slop penalty.
 ---
 
-# DSPy Autodialectics (3.2.x)
+# DSPy Autodialectics (3.3.x)
 
 Port of `autodialectics` (an agentic harness: immutable contracts, evidence,
 dialectical planning, domain execution, independent verification, slop
