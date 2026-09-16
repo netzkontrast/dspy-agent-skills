@@ -1,6 +1,6 @@
 # Installation
 
-Four installation paths, from easiest to most manual. All of them install the same 10 skills.
+Four installation paths, from easiest to most manual. All of them install the same 14 skills.
 
 ## 1. Claude Code: plugin marketplace (recommended)
 
