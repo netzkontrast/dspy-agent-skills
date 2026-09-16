@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.9.0 — 2026-09-16
+
+### The book, split by chapter
+
+`dspy-context-engineering-book` was one router over 57 notebooks. It is now an index over nine per-chapter skills, each carrying that chapter's transferable technique rather than a table of contents. Every claim was read from the notebook sources, and where a notebook and this pack's verified skills disagree, the disagreement is named.
+
+- `dspy-book-eight-steps` (ch. 1–3) — the build order, and the chapter's distinctive move: optimize the judge before the task, because an unvalidated judge moves the program toward its own errors.
+- `dspy-book-datasets` (ch. 4) — conversion recipes, seeded splits, difficulty stratification, and the synthetic-data patterns. Flags that chapter 4 contains **no** leakage or contamination warning and that chapter 3 evaluates on the full dataset including training rows.
+- `dspy-book-metrics` (ch. 5) — eleven recipes and the judge-calibration loop, plus a routing table the chapter never states and four gaps it never mentions, including that an optimizer pointed at a judge will exploit that judge.
+- `dspy-book-optimizers` (ch. 6) — twelve optimizers measured on one task. Two scored **below** the unoptimized baseline, the two free ones beat six paid ones, and the most expensive run produced the worst result.
+- `dspy-book-modules` (ch. 7) — adapters and multimodal, neither covered anywhere else in this pack, plus the rule that DSPy does not select JSONAdapter automatically for a Pydantic output.
+- `dspy-book-agents` (ch. 8) — MCP tools and their async contract, conversation memory, and the two ways a multi-hop loop terminates. Records that the framework-comparison notebook has **no conclusion cell**, so any cited verdict is not in the repository.
+- `dspy-book-use-cases` (ch. 9) — seven architectures routed by task shape, and the committed-benchmark pattern: assert against a recorded artifact statically, offline and free.
+- `dspy-book-production` (ch. 10) — load-once serving, guardrails as optimizable signature fields, typed-only fallback, and the trace-field rule that keeps MLflow's MCP server from exhausting a context window.
+- `dspy-book-coding-agents` (ch. 11) — optimizing a SKILL.md or AGENTS.md with `gepa.optimize_anything`, the 20-case adversarial benchmark shape, and the silent trap where renaming the evaluator's `example` parameter drops the dataset.
+
+### Compounding-engineering wiki plan
+
+- Added `docs/compounding-wiki-extension-plan.md`: how to extend the Kohärenz Protokoll wiki with a learnings layer, additively. The finding it rests on is that the wiki already produces learnings in three places (the D-xx decision log, agent memory files, lit-critic triage) and has no path that reads any of them back.
+- Every extension point is off by default, mirroring the existing `no_canon_retrieval` pattern, so no current caller changes behaviour.
+- The plan also documents what **not** to copy from the upstream, verified in its source: a literal backslash-n that degrades the injected context to one line, a hard-coded similarity of 0.9 that makes its threshold argument inert, a field-name mismatch that leaves auto-codified rows empty and silently disables deduplication on them, a README claiming optimizers that do not exist in the code, an in-place default that edits your current branch, and a missing LICENSE file.
+
+### Validation
+
+- `pytest tests/` passes with the nine new skills
+- every new example's `--dry-run` passes with no LM, no network and no service
+
 ## v0.8.0 — 2026-09-16
 
 ### Six integration skills, and a plugin plan for Kohärenz Protokoll

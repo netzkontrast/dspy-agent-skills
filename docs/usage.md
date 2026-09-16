@@ -1,6 +1,6 @@
 # Usage Guide
 
-## The twenty skills at a glance
+## The twenty-nine skills at a glance
 
 | Skill | Invoke when | Depends on |
 |---|---|---|
@@ -22,7 +22,17 @@
 | `dspy-drg-kg` | Turning documents into a typed, queryable knowledge graph | `dspy-retrieval` |
 | `dspy-tara-rag` | Self-corrective retrieval; scoring context on four dimensions | `dspy-retrieval`, `dspy-evaluation-harness` |
 | `dspy-tools-cli` | Managing DSPy programs from the shell rather than inline | `dspy-optimizer-selection` |
-| `dspy-context-engineering-book` | Finding a worked notebook before writing an implementation | — |
+| `dspy-context-engineering-book` | Finding a worked notebook, or the right chapter skill | — |
+| `dspy-book-eight-steps` | The eight-step build order, and optimizing the judge before the task | book chapter 1-3 |
+| `dspy-book-datasets` | Where trainsets come from: conversion, seeded splits, difficulty tiers, synthetic data | book chapter 4 |
+| `dspy-book-metrics` | Eleven metric recipes, and when an LLM judge may be trusted | book chapter 5 |
+| `dspy-book-optimizers` | Twelve optimizers measured on one task, with cost and wall time | book chapter 6 |
+| `dspy-book-modules` | Adapters, multimodal inputs, code execution, parallel and majority voting | book chapter 7 |
+| `dspy-book-agents` | MCP tools, conversation memory, and multi-hop budget control | book chapter 8 |
+| `dspy-book-use-cases` | Seven complete applications as a pattern library | book chapter 9 |
+| `dspy-book-production` | Serving a compiled program, optimizable guardrails, MLflow tracing | book chapter 10 |
+| `dspy-book-coding-agents` | Optimizing a SKILL.md or AGENTS.md as a text artifact | book chapter 11 |
+
 
 | `dspy-advanced-workflow` | Full greenfield DSPy build and the self-optimizing loop | all others |
 
@@ -194,6 +204,33 @@ uv run python example_tools_cli.py --dry-run
 
 cd ../dspy-context-engineering-book
 uv run python example_book_map.py --dry-run
+
+cd ../dspy-book-eight-steps
+uv run python example_eight_steps.py --dry-run
+
+cd ../dspy-book-datasets
+uv run python example_dataset_builder.py --dry-run
+
+cd ../dspy-book-metrics
+uv run python example_metric_recipes.py --dry-run
+
+cd ../dspy-book-optimizers
+uv run python example_optimizer_results.py --dry-run
+
+cd ../dspy-book-modules
+uv run python example_module_choice.py --dry-run
+
+cd ../dspy-book-agents
+uv run python example_agent_budget.py --dry-run
+
+cd ../dspy-book-use-cases
+uv run python example_use_case_router.py --dry-run
+
+cd ../dspy-book-production
+uv run python example_serving_checks.py --dry-run
+
+cd ../dspy-book-coding-agents
+uv run python example_artifact_optimizer.py --dry-run
 
 cd ../dspy-advanced-workflow
 uv run python example_pipeline.py --dry-run

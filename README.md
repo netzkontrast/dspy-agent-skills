@@ -2,7 +2,7 @@
 
 [![DSPy 3.2.x](https://img.shields.io/badge/DSPy-3.2.x-0A7B83)](https://dspy.ai/)
 
-**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of twenty agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
+**Production-grade DSPy 3.2.x skills for coding agents.** A synthesized, spec-compliant pack of twenty-nine agent skills that turns Claude Code, Codex CLI, and any other [agentskills.io](https://agentskills.io)-compatible agent into a DSPy expert.
 
 - ✅ Validated against DSPy 3.2.1 (the real API, not inferred from stale docs)
 - ✅ Single source of truth for both **Claude Code** and **Codex CLI**
@@ -35,6 +35,15 @@
 | [`dspy-tara-rag`](skills/dspy-tara-rag/SKILL.md) | Self-corrective RAG: a ReAct agent with seven retrieval tools and a 4D context score |
 | [`dspy-tools-cli`](skills/dspy-tools-cli/SKILL.md) | The DSPyTools CLI: compile, evaluate and manage DSPy programs from the shell |
 | [`dspy-context-engineering-book`](skills/dspy-context-engineering-book/SKILL.md) | Routing 57 O'Reilly book notebooks — the worked example for almost any DSPy question |
+| [`dspy-book-eight-steps`](skills/dspy-book-eight-steps/SKILL.md) | The eight-step build order, and optimizing the judge before the task (book ch. 1-3) |
+| [`dspy-book-datasets`](skills/dspy-book-datasets/SKILL.md) | Where trainsets come from: conversion, seeded splits, difficulty tiers, synthetic data (book ch. 4) |
+| [`dspy-book-metrics`](skills/dspy-book-metrics/SKILL.md) | Eleven metric recipes, and when an LLM judge may be trusted (book ch. 5) |
+| [`dspy-book-optimizers`](skills/dspy-book-optimizers/SKILL.md) | Twelve optimizers measured on one task, with cost and wall time (book ch. 6) |
+| [`dspy-book-modules`](skills/dspy-book-modules/SKILL.md) | Adapters, multimodal inputs, code execution, parallel and majority voting (book ch. 7) |
+| [`dspy-book-agents`](skills/dspy-book-agents/SKILL.md) | MCP tools, conversation memory, and multi-hop budget control (book ch. 8) |
+| [`dspy-book-use-cases`](skills/dspy-book-use-cases/SKILL.md) | Seven complete applications as a pattern library (book ch. 9) |
+| [`dspy-book-production`](skills/dspy-book-production/SKILL.md) | Serving a compiled program, optimizable guardrails, MLflow tracing (book ch. 10) |
+| [`dspy-book-coding-agents`](skills/dspy-book-coding-agents/SKILL.md) | Optimizing a SKILL.md or AGENTS.md as a text artifact (book ch. 11) |
 | [`dspy-advanced-workflow`](skills/dspy-advanced-workflow/SKILL.md) | End-to-end builds — orchestrates the core skills, including the self-optimizing loop |
 
 ## Install
@@ -149,7 +158,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v0.8.0** • Targets DSPy 3.2.x
+**v0.9.0** • Targets DSPy 3.2.x
 
 ## License
 
