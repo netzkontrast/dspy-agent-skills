@@ -1,5 +1,85 @@
 # Changelog
 
+## v0.10.0 — 2026-09-16
+
+Merge of two parallel skill lines. Both added skills to the same pack; this release is their union, and the version supersedes the `0.7.0` each claimed independently.
+
+## v0.9.0 — 2026-09-16
+
+### The book, split by chapter
+
+`dspy-context-engineering-book` was one router over 57 notebooks. It is now an index over nine per-chapter skills, each carrying that chapter's transferable technique rather than a table of contents. Every claim was read from the notebook sources, and where a notebook and this pack's verified skills disagree, the disagreement is named.
+
+- `dspy-book-eight-steps` (ch. 1–3) — the build order, and the chapter's distinctive move: optimize the judge before the task, because an unvalidated judge moves the program toward its own errors.
+- `dspy-book-datasets` (ch. 4) — conversion recipes, seeded splits, difficulty stratification, and the synthetic-data patterns. Flags that chapter 4 contains **no** leakage or contamination warning and that chapter 3 evaluates on the full dataset including training rows.
+- `dspy-book-metrics` (ch. 5) — eleven recipes and the judge-calibration loop, plus a routing table the chapter never states and four gaps it never mentions, including that an optimizer pointed at a judge will exploit that judge.
+- `dspy-book-optimizers` (ch. 6) — twelve optimizers measured on one task. Two scored **below** the unoptimized baseline, the two free ones beat six paid ones, and the most expensive run produced the worst result.
+- `dspy-book-modules` (ch. 7) — adapters and multimodal, neither covered anywhere else in this pack, plus the rule that DSPy does not select JSONAdapter automatically for a Pydantic output.
+- `dspy-book-agents` (ch. 8) — MCP tools and their async contract, conversation memory, and the two ways a multi-hop loop terminates. Records that the framework-comparison notebook has **no conclusion cell**, so any cited verdict is not in the repository.
+- `dspy-book-use-cases` (ch. 9) — seven architectures routed by task shape, and the committed-benchmark pattern: assert against a recorded artifact statically, offline and free.
+- `dspy-book-production` (ch. 10) — load-once serving, guardrails as optimizable signature fields, typed-only fallback, and the trace-field rule that keeps MLflow's MCP server from exhausting a context window.
+- `dspy-book-coding-agents` (ch. 11) — optimizing a SKILL.md or AGENTS.md with `gepa.optimize_anything`, the 20-case adversarial benchmark shape, and the silent trap where renaming the evaluator's `example` parameter drops the dataset.
+
+### Compounding-engineering wiki plan
+
+- Added `docs/compounding-wiki-extension-plan.md`: how to extend the Kohärenz Protokoll wiki with a learnings layer, additively. The finding it rests on is that the wiki already produces learnings in three places (the D-xx decision log, agent memory files, lit-critic triage) and has no path that reads any of them back.
+- Every extension point is off by default, mirroring the existing `no_canon_retrieval` pattern, so no current caller changes behaviour.
+- The plan also documents what **not** to copy from the upstream, verified in its source: a literal backslash-n that degrades the injected context to one line, a hard-coded similarity of 0.9 that makes its threshold argument inert, a field-name mismatch that leaves auto-codified rows empty and silently disables deduplication on them, a README claiming optimizers that do not exist in the code, an in-place default that edits your current branch, and a missing LICENSE file.
+
+### Validation
+
+- `pytest tests/` passes with the nine new skills
+- every new example's `--dry-run` passes with no LM, no network and no service
+
+## v0.8.0 — 2026-09-16
+
+### Six integration skills, and a plugin plan for Kohärenz Protokoll
+
+Each skill teaches one external project, verified against its source rather than its README. Where a README and the code disagreed, the code is documented and the discrepancy is named.
+
+- Added `dspy-refrag` — REFRAG fragment selection. Documents, with file and line evidence, that the fragment selection never reduces the prompt (`forward` joins every passage and only annotates `(selected: bool)`), that `FAISSRetriever` and `PineconeRetriever` raise `NotImplementedError`, that importing the package requires psycopg2, and that the Weaviate pin contradicts the Weaviate code. One file, `sensor_advanced.py`, is worth vendoring.
+- Added `dspy-rlm-hooks` — the four RLM lifecycle hooks and speculative execution. Covers the order-dependent composition (hooks before speculation, or speculation silently no-ops), the purity requirement for speculated tools, and the LM-free benchmark harness.
+- Added `dspy-drg-kg` — schema-driven knowledge-graph extraction. Leads with the two failure modes that waste the most time: the base install omits DSPy so extraction cannot run, and a missing LM returns an empty graph with only a log warning unless a strict env var is set.
+- Added `dspy-tara-rag` — self-corrective RAG. Documents the seven tools (the README says six), the 4D context score, and that progressive leniency terminates by lowering the bar: a context scoring 27 of 100 is accepted at retry 3. Flags that the claimed MIT `LICENSE` file is absent from the repository.
+- Added `dspy-tools-cli` — the DSPyTools CLI. Separates the commands that work standalone from those needing FalkorDB, Redis or llama-cpp-server, and reports the source counts where they differ from the README's.
+- Added `dspy-context-engineering-book` — a router over the 57 notebooks of the O'Reilly companion repo, mapping each of this pack's optimizer names to its chapter-6 notebook.
+
+### Dependency manifests
+
+- Added `requirements.txt` (dspy, pytest — enough for every dry run and the validators) and `requirements-extras.txt`, grouped by skill. No example requires its extra: each degrades to a deterministic core when the package is absent and asserts the live API surface when present.
+
+### Kohärenz Protokoll plugin plan
+
+- Added `docs/kohaerenz-protokoll-plugin-plan.md`: what to port from each of the six upstreams, with a verdict and a reason per repo, the four concrete integration points in `tools/kpwiki/`, a sequenced plan, and what not to do. Three upstreams are recommended against porting.
+- Added `scaffolding/kp_canon_retriever.py` (design note plus scaffolding only, inert): the `CanonRetriever` seam that `SourceIngest` already accepts and currently fills with a no-op, meaning its canon-conflict check never fires.
+
+### A correction to MMR, found by measuring
+
+The scaffold adds a relevance floor to MMR selection, because plain MMR scores an irrelevant passage `0 - 0 = 0` and a relevant near-duplicate slightly below zero — so the irrelevant one wins. Measured on a four-passage fixture, unguarded MMR selected the passage with zero query similarity at every diversity setting from 0.5 to 0.8. The floor fixes it at every setting; the diversity weight alone never does. Both the scaffold and the `dspy-refrag` skill now teach the floor as mandatory.
+
+### Validation
+
+- `pytest tests/` passes with the six new skills
+- every new example's `--dry-run` passes, both with and without its package installed
+- `dspy-rlm-hooks` and `drg-kg` were installed from source and their asserted API surfaces verified live
+
+## v0.7.0 — 2026-09-16
+
+### Three new skills, consolidated from `OmidZamani/dspy-skills` (MIT)
+
+That pack ships 22 narrow skills; this release ports the parts the pack did not already cover, merged into three skills rather than transplanted one-to-one. Ten source skills map into these three; the rest overlapped `dspy-fundamentals`, `dspy-evaluation-harness` or `dspy-gepa-optimizer` and were left out rather than creating a second source of truth.
+
+- Added `dspy-optimizer-selection` — the whole optimizer family (LabeledFewShot, BootstrapFewShot, BootstrapFewShotWithRandomSearch, KNNFewShot, COPRO, MIPROv2, SIMBA, GEPA, BootstrapFinetune, Ensemble, BetterTogether) as a routing decision: measure a baseline, take the cheapest optimizer whose trainset-size and metric-shape requirements you meet, escalate only on a measured plateau. Absorbs the source pack's six per-optimizer skills. Documents three `compile` signatures that break the common pattern (`Ensemble.compile(programs)`, `KNNFewShot.compile(student, teacher)`, `SIMBA`'s seed on compile) and that `MIPROv2` validates its LMs in the constructor, like GEPA's `reflection_lm`.
+- Added `dspy-retrieval` — `dspy.Embedder`, `dspy.Embeddings` (FAISS above 20,000 passages), index persistence, single-hop and deduplicated multi-hop RAG, and the rule that makes RAG debuggable: score recall@k separately from answer accuracy, with a table mapping the four outcomes to the component at fault. Corrects the source pack's global `dspy.configure(rm=...)` + `dspy.Retrieve` pattern to an injected callable retriever, which is testable.
+- Added `dspy-production` — cache hardening (`configure_cache(restrict_pickle=True)`), state-JSON versus cloudpickle save formats and which is safe to accept, usage accounting, async `acall`/`aforward`, `streamify` with `StreamListener`, `dspy.Parallel`, plus the observability half: `inspect_history`, `GLOBAL_HISTORY`, the full `BaseCallback` hook list, MLflow autolog, and the sampling/buffering a callback needs to avoid becoming request latency.
+- `dspy-advanced-workflow` step 6 now routes through `dspy-optimizer-selection` instead of assuming GEPA, step 7 points at `dspy-production`, and the routing table gained rows for retrieval, optimizer choice and deployment.
+
+### Validation
+
+Every API claim in the three skills was read off the installed wheel with `inspect.signature` rather than copied from prose docs, and each example asserts those signatures so an upstream change fails the smoke test instead of a user's compile run.
+
+- `pytest tests/` -> 249 passed
+- 14 of the 15 `skills/*/example_*.py --dry-run` pass, including the three new ones. `skills/dspy-rlm-module/example_rlm.py` still fails in an environment that resolves DSPy 3.3.x, where `dspy.RLM` renamed `max_iterations` to `max_iters`. That failure predates this release and is untouched here: the pack targets the DSPy 3.2.x series, and retargeting the RLM surface is a separate decision.
 ## v0.7.0 — 2026-09-16
 
 ### Three new skills: the wiki loop, the independent judge, the local runtime

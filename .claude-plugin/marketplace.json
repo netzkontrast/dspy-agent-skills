@@ -8,8 +8,8 @@
     {
       "name": "dspy-agent-skills",
       "source": "./",
-      "description": "Production-grade DSPy 3.2.x skills: fundamentals, evaluation, GEPA, BetterTogether, RLM, RLM workflow, DeepRefine, reflect loop, clarify gate, TetraFrame decision assessment, autodialectics anti-slop harness, wiki compile, adversarial review, local Claude-CLI runtime, and end-to-end self-optimizing workflow.",
-      "version": "0.7.0",
+      "description": "Production-grade DSPy 3.2.x skills: fundamentals, evaluation, GEPA, BetterTogether, RLM, RLM workflow, DeepRefine, reflect loop, clarify gate, TetraFrame decision assessment, autodialectics anti-slop harness, optimizer selection, retrieval, production deployment, and end-to-end self-optimizing workflow, plus integration skills for REFRAG, RLM hooks, DRG knowledge-graph extraction, self-corrective RAG, the DSPyTools CLI and the Context Engineering with DSPy notebooks, plus nine per-chapter skills from the Context Engineering with DSPy book.",
+      "version": "0.10.0",
       "author": {
         "name": "Bryan Young",
         "email": "bryan@intertwinesys.com"
@@ -31,6 +31,15 @@
         "tetraframe",
         "autodialectics",
         "anti-slop",
+        "retrieval",
+        "rag",
+        "production",
+        "observability",
+        "knowledge-graph",
+        "refrag",
+        "self-corrective-rag",
+        "book",
+        "context-engineering",
         "wiki",
         "adversarial-review",
         "local-runtime"

@@ -1,7 +1,7 @@
 {
   "name": "dspy-agent-skills",
-  "version": "0.7.0",
-  "description": "Production-grade DSPy 3.2.x skills for coding agents: signatures, modules, evaluation harnesses, GEPA optimization, RLM long-context reasoning, BetterTogether chaining, the RLM workflow for context-heavy verified work, DeepRefine knowledge-base refinement, the reflect loop for learning from corrections, the clarify gate for precision at authority boundaries, the TetraFrame four-corner assessment for contested decisions, the autodialectics anti-slop harness (contract, dialectic, independent verification, slop gate, champion/challenger), the wiki compile loop, the adversarial review gate, the local Claude-CLI runtime, and a full end-to-end self-optimizing DSPy workflow.",
+  "version": "0.10.0",
+  "description": "Production-grade DSPy 3.2.x skills for coding agents: signatures, modules, evaluation harnesses, GEPA optimization, RLM long-context reasoning, BetterTogether chaining, the RLM workflow for context-heavy verified work, DeepRefine knowledge-base refinement, the reflect loop for learning from corrections, the clarify gate for precision at authority boundaries, the TetraFrame four-corner assessment for contested decisions, the autodialectics anti-slop harness (contract, dialectic, independent verification, slop gate, champion/challenger), optimizer selection across the whole optimizer family, embedding retrieval and RAG, production deployment and observability, and a full end-to-end self-optimizing DSPy workflow, plus integration skills for REFRAG, RLM hooks, DRG knowledge-graph extraction, self-corrective RAG, the DSPyTools CLI and the Context Engineering with DSPy notebooks, plus nine per-chapter skills from the Context Engineering with DSPy book.",
   "author": {
     "name": "Bryan Young",
     "email": "bryan@intertwinesys.com"
@@ -25,6 +25,15 @@
     "tetraframe",
     "autodialectics",
     "anti-slop",
+    "retrieval",
+    "rag",
+    "production",
+    "observability",
+    "knowledge-graph",
+    "refrag",
+    "self-corrective-rag",
+    "book",
+    "context-engineering",
     "wiki",
     "adversarial-review",
     "local-runtime"
